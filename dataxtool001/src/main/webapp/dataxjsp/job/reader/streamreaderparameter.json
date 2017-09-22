@@ -1,0 +1,15 @@
+[{    
+    "id":"name",    
+    "text":"name"  ,
+     "selected":true
+},{    
+    "id":"mysqlreader",    
+    "text":"mysqlreader"   
+},{    
+    "id":"sliceRecordCount" ,    
+    "text":"sliceRecordCount" 
+       
+},{    
+    "id":"column" ,    
+    "text":"column"   
+}] 

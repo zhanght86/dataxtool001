@@ -1,0 +1,15 @@
+[{    
+    "id":"streamreader" ,    
+    "text":"streamreader"  ,
+     "selected":true
+},{    
+    "id":"mysqlreader",    
+    "text":"mysqlreader"   
+},{    
+    "id":"orclereader",    
+    "text":"orclereader" 
+       
+},{    
+    "id":"hdfsreader",    
+    "text":"hdfsreader"   
+}] 

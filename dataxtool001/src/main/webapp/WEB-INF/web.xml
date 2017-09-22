@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns="http://java.sun.com/xml/ns/javaee"  
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"  
+    version="3.0">  
+    <display-name>Archetype Created Web Application</display-name>  
+ 
+    
+    <context-param>  
+    	<param-name>contextConfigLocation</param-name>  
+    	<param-value>classpath:applicationContext.xml</param-value>  
+	</context-param> 
+    <!-- Spring和mybatis的配置文件 -->  
+    <!-- 业务层和持久层的配置文件，这些文件被父容器的spring所使用 
+    	我们知道多个spring容器可以设置父子级别的关系
+    	一般web层的spring容器将作为业务层的容器的子容器，即web层可以访问业务层，而业务层访问不了web层
+    -->
+ 
+    <!-- 编码过滤器 -->  
+    <filter>  
+        <filter-name>encodingFilter</filter-name>  
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>  
+        <async-supported>true</async-supported>  
+        <init-param>  
+            <param-name>encoding</param-name>  
+            <param-value>UTF-8</param-value>  
+        </init-param>  
+    </filter>  
+    <filter-mapping>  
+        <filter-name>encodingFilter</filter-name>  
+        <url-pattern>/*</url-pattern>  
+    </filter-mapping>  
+    <!-- Spring监听器 -->  
+    <listener>  
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>  
+    </listener>  
+  
+    <!-- Spring MVC servlet
+    	该servlet用于接收所有的请求，并将处理方法到不同的组件来工作
+    	根据请求的参数，以及handleMapping的配置，找到要处理的处理器handle
+    
+     -->  
+    <servlet>  
+        <servlet-name>SpringMVC</servlet-name>  
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>  
+        <!-- 这个servlet会从指定的classpath中寻找配置文件 -->
+        <init-param>  
+            <param-name>contextConfigLocation</param-name>  
+            <param-value>classpath:spring-mvc.xml</param-value>  
+        </init-param> 
+        <!-- 在容器启动的时候就创建 -->
+        <load-on-startup>1</load-on-startup>  
+        <async-supported>true</async-supported>  
+    </servlet>  
+    <servlet-mapping>  
+        <servlet-name>SpringMVC</servlet-name>  
+        <!-- 此处可以可以配置成*.do，对应struts的后缀习惯
+        	所有的url都会转向springmvc的那个核心的过滤器
+        	这里配置成.do，有一个好处是页面请求的静态资源不会被 
+         -->  
+        <url-pattern>*.do</url-pattern>  
+    </servlet-mapping>  
+    <welcome-file-list>  
+        <welcome-file>/index.jsp</welcome-file>  
+    </welcome-file-list>  
+  
+</web-app>

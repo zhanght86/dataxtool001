@@ -1,0 +1,54 @@
+[{    
+    "id":"1",    
+    "text":"管理",       
+    "children":[
+   
+    	{    
+    		"id":"managementlinux",
+        	"text":"linux管理" 
+    	},
+    	{    
+    		"id":"task管理",
+        	"text":"task管理" 
+    	},
+    	
+    	
+    	{    
+        	"text":"job管理",       
+        	"attributes":{    
+           		 "url":"/demo/book/abc",    
+           		 "price":100    
+        	}, 
+            "children":[{   
+            	"id":"readermanagement" ,
+           		 "text":"reader管理",    
+           		 "checked":true   
+       		 },
+       		 {    
+            	"id": 8,    
+           		 "text":"writer管理"   
+           		   
+        	},
+        	       		 {    
+            	"id": 8,    
+           		 "text":"reader002管理"   
+           		   
+        	},
+        	{    
+            	"id": 8,    
+           		 "text":"setting管理"   
+           		   
+        	}
+        	]    
+   		 }
+   		 
+   		 ]    
+},{    
+    "text":"Languages",    
+    "state":"closed",    
+    "children":[{    
+        "text":"Java"   
+    },{    
+        "text":"C#"   
+    }]    
+}] 
