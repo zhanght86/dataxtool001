@@ -48,13 +48,7 @@
 	    
 	    <!-- 主显示区域选项卡界面 -->
 	    <div region="center">
-	
 			<div id="tt" class="easyui-tabs" style="width:500px;height:250px;" data-options="fit:true"> 
-<!-- 			  
-			    <div title="reader" data-options="closable:true" >   
-			        <iframe width='100%' height='100%'  id='iframe' name='iframe' frameborder='0' scrolling='auto'  src='./job/reader/reader.jsp'></iframe> 
-			    </div>  -->
-			    
  			   	<div title="首页" data-options="closable:true" >
 	    			<iframe width='100%' height='100%'  id='iframe' name='iframe' frameborder='0' scrolling='auto'  src='welcome.jsp'></iframe>
 	    		</div>  

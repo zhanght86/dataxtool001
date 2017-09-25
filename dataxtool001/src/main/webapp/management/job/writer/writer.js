@@ -26,7 +26,7 @@ function closeform(){
 	$('#win').window('close');  // open a window 
 }
 //添加一个reader
-function addreader(){
+function addwriter(){
 	//获得所有行的数据
 	var rows = $("#pg").datagrid("getRows");//json对象
     var filename=$("#filename").val();
@@ -36,7 +36,7 @@ function addreader(){
 			"rows":rows
 	}	
 	var arg="reader="+JSON.stringify(json);
-	url= "http://localhost:8080/dataxtool001/datax/job/reader/addstreamreader.do";
+	url= "http://localhost:8080/dataxtool001/datax/job/writer/addstreamreader.do";
 	aj("POST",url,arg);
 	alert("添加成功");
 	$('#win').window('close');
@@ -47,7 +47,7 @@ function addreader(){
 //根据文件名删除指定的文件，使用异步提交
 function deletefilebyfilename(filename){
 	var arg="filename="+filename;
-	url= "http://localhost:8080/dataxtool001/datax/job/reader/deletefilebyfilename.do";
+	url= "http://localhost:8080/dataxtool001/datax/job/writer/deletefilebyfilename.do";
 	aj("post", url, arg);
 	$('#dg').datagrid('reload');    
 }
@@ -59,7 +59,7 @@ function findReaderByFilename() {
 	var rowselect=$('#dg').datagrid("getSelected");
 	var filename=rowselect.filename;
 	//弹出窗口
-	var url="http://localhost:8080/dataxtool001/datax/job/reader/findreaderbyfilename.do";
+	var url="http://localhost:8080/dataxtool001/datax/job/writer/findreaderbyfilename.do";
 	//异步加载数据
 	var arg="filename="+filename;
 	url=url+"?"+arg;
@@ -79,7 +79,7 @@ function findReaderByFilename() {
 function initdatagrid(){
 	//初始化表格
 	$('#dg').datagrid({ 
-		url:"/dataxtool001//datax/job/reader/findallreader.do",
+		url:"/dataxtool001//datax/job/writer/findallreader.do",
 	    columns:[	//定义列
 	    	[   
 	    	{field:'checkbox',title:'checkbox',width:100,checkbox:true},
@@ -193,7 +193,7 @@ function initwin(){
 	
 	//提交添加的数据
     $('#committable').bind('click', function(){ 
-    	addreader();
+    	addwriter();
     });   
 	
 }

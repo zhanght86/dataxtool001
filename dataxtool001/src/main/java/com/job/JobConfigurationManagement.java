@@ -48,5 +48,14 @@ public class JobConfigurationManagement {
 		
 		
 	}
+	/**
+	 * 
+	 * 得到writermanagement
+	 * @return
+	 */
+	public WriterManagement findWirterManagement() {
+		
+		return contentManagement.getWriterManagement();
+	}
 
 }

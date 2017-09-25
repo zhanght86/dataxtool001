@@ -16,7 +16,7 @@
 
 
 	
-	<script type="text/javascript" src="/dataxtool001/management/job/reader002/reader.js"></script>
+	<script type="text/javascript" src="/dataxtool001/management/job/writer/writer.js"></script>
 </head>
 	<body>
 		<!-- 表格 -->

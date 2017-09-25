@@ -52,6 +52,10 @@ public class ContentManagement {
 	public ReaderManagement getReaderManagement() {
 		return readerManagement;
 	}
+	public WriterManagement getWriterManagement() {
+	
+		return writerManagement;
+	}
 
 
 

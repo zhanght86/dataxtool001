@@ -7,19 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.dataxmanagement.DataxManagement;
 import net.sf.json.JSONObject;
-/*
- * 前台请求的格式都会固定,名字都为kdata，并且是一个json格式的字符串
- * data
- * {
- * 		filename:name  //文件的名字
- * 		arg:{}			//要传的参数
- * }
- * 
- * 后台就之间将其包装为一个json对象
- * 
- */ 
 @Controller
-public class ReaderControl {
+public class WriterControl {
 	@Autowired
 	private DataxManagement dataxManagement;
 	/**
@@ -27,11 +16,11 @@ public class ReaderControl {
 	 * addStreamReader
 	 * @return
 	 */
-	@RequestMapping("/datax/job/reader/addstreamreader.do")
-	public @ResponseBody String addStreamReader(@RequestParam("reader") String reader) {
-		JSONObject readerJson=JSONObject.fromObject(reader);
+	@RequestMapping("/datax/job/writer/addstreamreader.do")
+	public @ResponseBody String addWriter(@RequestParam("reader") String reader) {
+		JSONObject writerJson=JSONObject.fromObject(reader);
 		//保存一个json对象
-		dataxManagement.addReader(readerJson);
+		dataxManagement.addWriter(writerJson);
 		return "";
 	}
 	/**
@@ -39,13 +28,13 @@ public class ReaderControl {
 	 * 
 	 * 
 	 */
-	@RequestMapping("/datax/job/reader/findallreader.do")
-	public @ResponseBody String findAllReaders(HttpServletRequest request) {
+	@RequestMapping("/datax/job/writer/findallreader.do")
+	public @ResponseBody String findAllWriters(HttpServletRequest request) {
 		//第几页
 		int page=Integer.parseInt(request.getParameter("page"));
 		//一页多少数据
 		int rows=Integer.parseInt(request.getParameter("rows"));
-		JSONObject result=dataxManagement.findAllReader(page,rows);
+		JSONObject result=dataxManagement.findAllWriter(page,rows);
 		return result.toString();
 	}
 	
@@ -53,18 +42,17 @@ public class ReaderControl {
 	 * 前台根据文件名字取得前台格式的jsonreader
 	 * 
 	 */
-	@RequestMapping("/datax/job/reader/findreaderbyfilename.do")
+	@RequestMapping("/datax/job/writer/findreaderbyfilename.do")
 	public @ResponseBody String findReaderByFilename(HttpServletRequest request) {
 		String filename= request.getParameter("filename");
 		JSONObject jsonObject=dataxManagement.findReaderByFilename(filename);
 		return jsonObject.getJSONArray("rows").toString();
 	}
 
-	@RequestMapping("/datax/job/reader/deletefilebyfilename.do")
+	@RequestMapping("/datax/job/writer/deletefilebyfilename.do")
 	public @ResponseBody String deleteReaderByFilename(HttpServletRequest request) {
 		String filename=request.getParameter("filename");
-		
-		dataxManagement.deleteFileByFilename(filename);
+		dataxManagement.deleteWriterFileByFilename(filename);
 		return "";
 	}
 }

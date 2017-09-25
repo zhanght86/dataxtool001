@@ -20,6 +20,8 @@ $(function(){
 				newSrc="/dataxtool001/management/task/task.jsp";
 			}else if(node.text=="reader002管理"){
 				newSrc="/dataxtool001/management/job/reader002/reader.jsp";
+			}else if(node.text=="writer管理"){
+				newSrc="/dataxtool001/management/job/writer/writer.jsp";
 			}
 			//为新面板设置元素
 			newIframe.attr({

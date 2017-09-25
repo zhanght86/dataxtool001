@@ -1,21 +1,11 @@
 package com.job;
-
-import java.security.Policy.Parameters;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.json.JsonManagement;
-import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 @Service
@@ -238,18 +228,24 @@ public class ReaderManagement {
 
 	private JSONArray processColumn(JSONArray column) {
 		JSONArray array=new JSONArray();
-		
-		for(int i=0;i<column.size();i++) {
-			JSONObject c=(JSONObject) column.get(i);
-			JSONObject jsonObject= new JSONObject();
-			String typeAndValue=c.getString("type")+"/"+c.getString("value");
-			jsonObject.put("name", "type/value");
-			jsonObject.put("value", typeAndValue);
-			jsonObject.put("group", "column");
-			jsonObject.put("editor", "text");
-			array.add(jsonObject);	
+		if(column==null) {
+			return array;
+		}else {
+			for(int i=0;i<column.size();i++) {
+				JSONObject c=(JSONObject) column.get(i);
+				JSONObject jsonObject= new JSONObject();
+				String typeAndValue=c.getString("type")+"/"+c.getString("value");
+				jsonObject.put("name", "type/value");
+				jsonObject.put("value", typeAndValue);
+				jsonObject.put("group", "column");
+				jsonObject.put("editor", "text");
+				array.add(jsonObject);	
+			}
+			return array;
 		}
-		return array;
+		
+		
+
 	}
 	private JSONArray processParameters(Map<String,String> parameters) {
 		JSONArray array=new JSONArray();
@@ -268,7 +264,6 @@ public class ReaderManagement {
 	//处理names成为row格式的数据
 	private JSONArray processNames(Map<String,String> names) {
 		JSONArray array=new JSONArray();
-		
 		for(Map.Entry<String, String> entry:names.entrySet()) {
 			JSONObject jsonObject= new JSONObject();
 			jsonObject.put("name", entry.getKey());
@@ -281,7 +276,7 @@ public class ReaderManagement {
 		return array;
 	}
 	private JSONArray findColumn(JSONObject reader) {
-		JSONObject parameter=reader.getJSONObject("parameter");
+		JSONObject parameter=(JSONObject) reader.get("parameter");
 		if(parameter==null) {
 			return null;
 		}else {
@@ -298,12 +293,16 @@ public class ReaderManagement {
 	}
 	private Map findAllParameters(JSONObject reader) {
 		Map paramters=new HashMap();
-		JSONObject p=reader.getJSONObject("parameter");
-		if(p==null) {
+		JSONObject p=(JSONObject) reader.get("parameter");
+		//System.out.println(p);
+		if(p == null) {
 			return paramters;
 		}
 		paramters=findAllName(p);
 		return paramters;
+	
+		
+
 	}
 	/**
 	 * 
@@ -326,6 +325,18 @@ public class ReaderManagement {
 			}
 			return keyAndValue;
 
+		
+	}
+	/**
+	 * 
+	 * 删除指定文件
+	 * @param filename
+	 */
+	public void deleteFileByFilename(String filename) {
+		//需要全路径名
+		String url="d://json//";
+		filename=url+filename+".json";
+		jsonManagement.DeleteFolder(filename);
 		
 	}
 	
