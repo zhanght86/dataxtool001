@@ -22,6 +22,11 @@ $(function(){
 				newSrc="/dataxtool001/management/job/reader002/reader.jsp";
 			}else if(node.text=="writer管理"){
 				newSrc="/dataxtool001/management/job/writer/writer.jsp";
+			}else if(node.text=="setting管理"){
+				newSrc="/dataxtool001/management/job/setting/setting.jsp";
+			}else if(node.text=="job管理"){
+				newSrc="/dataxtool001/management/job/job/job.jsp";
+				
 			}
 			//为新面板设置元素
 			newIframe.attr({
@@ -42,10 +47,6 @@ $(function(){
 			        }    
 			    }]    
 			});
-			
-			//添加iframe到选项卡中
-			//$("#tt").append(newIframe);
-			//alert(node.text);  // 在用户点击的时候提示
 		}
 	});
 

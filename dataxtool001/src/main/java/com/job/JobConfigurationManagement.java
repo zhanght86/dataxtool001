@@ -17,6 +17,12 @@ import net.sf.json.JSONObject;
 public class JobConfigurationManagement {
 	@Autowired
 	private SettingManagement settingManagement;
+	public SettingManagement getSettingManagement() {
+		return settingManagement;
+	}
+	public void setSettingManagement(SettingManagement settingManagement) {
+		this.settingManagement = settingManagement;
+	}
 	@Autowired
 	private ContentManagement contentManagement;
 	public JSONObject generateDefaultConfiguration() {

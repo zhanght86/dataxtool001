@@ -39,13 +39,13 @@ public class WriterControl {
 	}
 	
 	/**
-	 * 前台根据文件名字取得前台格式的jsonreader
+	 * 前台根据文件名字取得前台格式的jsonwriter
 	 * 
 	 */
-	@RequestMapping("/datax/job/writer/findreaderbyfilename.do")
+	@RequestMapping("/datax/job/writer/findwriterbyfilename.do")
 	public @ResponseBody String findReaderByFilename(HttpServletRequest request) {
 		String filename= request.getParameter("filename");
-		JSONObject jsonObject=dataxManagement.findReaderByFilename(filename);
+		JSONObject jsonObject=dataxManagement.findWriterByFilename(filename);
 		return jsonObject.getJSONArray("rows").toString();
 	}
 

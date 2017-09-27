@@ -91,7 +91,7 @@ public class DataxServiceManagement {
 		System.out.println(JsonManagement.formatJson(result.toString()));
 		
 		//
-		dataxManagement.updateReader(dataxReaderOP.getReaderparameter(), dataxReaderOP.getArg(), result);
+		//dataxManagement.updateReader(dataxReaderOP.getReaderparameter(), dataxReaderOP.getArg(), result);
 		System.out.println(JsonManagement.formatJson(result.toString()));
 		
 		//将reader生成为一张表

@@ -39,6 +39,11 @@
            		 "text":"setting管理"   
            		   
         	}
+        	,{    
+            	"id": 8,    
+           		 "text":"job管理"   
+           		   
+        	}
         	]    
    		 }
    		 

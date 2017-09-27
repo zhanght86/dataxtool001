@@ -21,10 +21,10 @@ public class ServiceManagement {
 	
 	private JsonManagement jm=new JsonManagement();
 	public void createjob(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		JSONObject json=dm.generateDefaultJob();
-		String s=jm.formatJson(json.toString());
+/*		//JSONObject json=dm.generateDefaultJob();
+		//String s=jm.formatJson(json.toString());
 		System.out.println(s);
-		response.getWriter().write(s);
+		response.getWriter().write(s);*/
 		
 	
 	}
@@ -45,7 +45,7 @@ public class ServiceManagement {
 	 *	用于更新reader的值
 	 * 
 	 */
-	public void updateReader(HttpServletRequest request, HttpServletResponse response) {
+/*	public void updateReader(HttpServletRequest request, HttpServletResponse response) {
 		//获取前台表单的数据
 		String arg=request.getParameter("arg");
 		String readertype=request.getParameter("readertype");
@@ -70,7 +70,7 @@ public class ServiceManagement {
 			e.printStackTrace();
 		}
 		
-	}
+	}*/
 	
 
 }

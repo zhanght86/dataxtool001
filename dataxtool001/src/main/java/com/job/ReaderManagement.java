@@ -1,10 +1,14 @@
 package com.job;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+import com.json.Configuration;
 import com.json.JsonManagement;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -125,9 +129,13 @@ public class ReaderManagement {
 	 */
 	public void saveReader(JSONObject readerJson, String url) {
 		//在保存之前要进行处理，因为readerjson中不是标准的reader格式
-		url=url+readerJson.getString("filename")+".json";
+		url=url+readerJson.getString("filename");
 		JSONObject formatReader=processRows(readerJson);
-		jsonManagement.JSONToFile(formatReader, url);
+		JSONObject jsonObject=new JSONObject();
+		jsonObject.put("filename", readerJson.getString("filename"));
+		jsonObject.put("description", "");
+		jsonObject.put("data", formatReader.toString());
+		jsonManagement.JSONToFile(jsonObject, url);
 		
 	}
 	/**
@@ -170,10 +178,41 @@ public class ReaderManagement {
 	 * }
 	 * @return
 	 */
-	public List findAllReaders() {
-		String url="d://json/";
-		return jsonManagement.parseJsonFileToJsonObjects(url);
+	public List<JSONObject> findAllReaders() {
+		String url=Configuration.readerurl;
+		List readers=jsonManagement.parseJsonFileToJsonObjects(url);
+		return readers;
 		
+	}
+	
+	/**
+	 * 
+	 * 将标准格式的json转化为前端需要的格式
+	 * 	 	{ 
+			"name":"streamreader",
+			"filename":"reader1",
+ 			"type":"reader"
+ 			}
+	 * @param readers
+	 * @return
+	 */
+	public JSONObject processReadersToResult(List readers) {
+		JSONObject result=new JSONObject();
+		JSONArray rows=new JSONArray();
+		for(int i=0;i<readers.size();i++) {
+			JSONObject reader=(JSONObject) readers.get(i);
+			JSONObject row=new JSONObject();
+			String name=reader.getJSONObject("data").getString("name");
+			String filename=reader.getString("filename");
+			String type="reader";
+			row.put("name", name);
+			row.put("filename", filename);
+			row.put("type", type);
+			rows.add(row);	
+		}
+		result.put("total", rows.size());
+		result.put("rows", rows);
+		return result;
 	}
 	/**
 	 * 
@@ -300,9 +339,6 @@ public class ReaderManagement {
 		}
 		paramters=findAllName(p);
 		return paramters;
-	
-		
-
 	}
 	/**
 	 * 
@@ -337,6 +373,20 @@ public class ReaderManagement {
 		String url="d://json//";
 		filename=url+filename+".json";
 		jsonManagement.DeleteFolder(filename);
+		
+	}
+	/**
+	 * 
+	 * 找到所有的文件的名字
+	 * @return
+	 */
+	public List<String> findAllReadersName() {
+		List<JSONObject> jsons=findAllReaders();
+		List<String> names=new LinkedList<String>();
+		for(int i=0;i<jsons.size();i++) {
+			names.add(jsons.get(i).getString("filename"));
+		}
+		return names;
 		
 	}
 	

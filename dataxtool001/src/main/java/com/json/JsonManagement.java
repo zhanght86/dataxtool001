@@ -11,17 +11,31 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.json.Json;
-
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
-import com.alibaba.fastjson.parser.deserializer.ParseProcess;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import com.alibaba.fastjson.parser.JSONToken;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.util.JSONTokener;
+/**
+ * 该对象是用来处理json，对于json的增删改查
+ * 同时可以保存json格式对象到文件中
+ * 文件的格式有规范的，不是原生的datax的json格式，而是自己定义的，如下
+ * 文件名必须在保存的时候就需要给定，如果没有，默认为""
+ * {
+ * 	filename:   指定文件的文件名
+ * 	description:  文件的描述
+ * 	data:  文件的数据
+ * }
+ * 
+ * 
+ * @author Johnny
+ *
+ */
 @Service
 public class JsonManagement {
 	public JSONObject translateStringToJSONObiect(String jsonOfString) {
@@ -84,14 +98,10 @@ public class JsonManagement {
 	public List<JSONObject> parseJsonFileToJsonObjects(String url){
 		List<JSONObject> jsons=new LinkedList<JSONObject>();
 		List<String> names=findAllFileNameFromUrl(url);
-		processNames(names);//处理掉.json后缀
 		for(int i=0;i<names.size();i++) {
-			String qualifiedName=url+names.get(i)+".json";
+			String qualifiedName=url+names.get(i);
 			JSONObject jsonObject=parseJsonFileToJsonObject(qualifiedName);
-			JSONObject newJson=new JSONObject();
-			newJson.put("filename", names.get(i));
-			newJson.put("data", jsonObject);
-			jsons.add(newJson);
+			jsons.add(jsonObject);
 			
 		}
 		return jsons;
@@ -99,15 +109,6 @@ public class JsonManagement {
 	}
 
 
-	//处理掉json文件的后缀
-	private void processNames(List<String> names) {
-		for(int i=0;i<names.size();i++) {
-			String name=processName(names.get(i));
-			names.set(i, name);
-			
-		}
-		
-	}
 	
 	//处理单个文件的后缀
 	private String processName(String name) {
@@ -562,7 +563,163 @@ public class JsonManagement {
         } else {  
             return false;  
         }  
-    } 
+    }
+    /**
+     * 
+     * 
+     * @param url 指定文件的路径
+     * @param filename 指定文件名，必须带有后缀
+     * @param data 文件的json格式的数据
+     * @param description 对文件的描述
+     */
+	public void saveFile(String url,String filename,String data,String description ) {
+		//封装数据
+		FileJson fileJson=new FileJson();
+		fileJson.setFilename(filename);
+		fileJson.setDescription(description);
+		fileJson.setData(data);
+		String qualitifyurl=url+filename;//全路径名
+		//将对象转化为json格式
+		JSONObject jsonObject=JSONObject.fromObject(fileJson);
+		StringToFile(jsonObject.toString(), qualitifyurl);
+	} 
+	/**
+	 * 
+	 * 重载的方法
+	 * @param url  目录的名字
+	 * @param fileJson
+	 */
+	public boolean saveFile(String url,FileJson fileJson) {
+		String filename=fileJson.getFilename();
+		String qualitifyurl=url+fileJson.getFilename();//全路径名
+		//将对象转化为json格式
+		JSONObject jsonObject=JSONObject.fromObject(fileJson);
+		//判断不能重名
+		List<String> names=findAllFileNameFromUrl(url);
+		for(int i=0;i<names.size();i++) {
+			String name=names.get(i);
+			if(filename.equals("")||filename.equals(name)) {
+				System.out.println("文件重名或者为空");
+				return false;
+			}
+		}
+		StringToFile(jsonObject.toString(), qualitifyurl);
+		return true;
+	}
 	
-    
+	/**
+	 * 
+	 * 从指定的路径中查找所有的文件
+	 * @param url
+	 * @return
+	 */
+	public List<JSONObject> findAllFileByUrl(String url) {
+		//根据文件名得到所有json格式的对象
+		List<JSONObject> jsonObjects=parseJsonFileToJsonObjects(url);
+		return jsonObjects;
+		
+	}
+	
+	/**
+	 * 
+	 * 从指定的路径中查找所有的文件
+	 * @param url
+	 * @return
+	 */
+	public List<JSONObject> findAllFileByUrl_001(String url) {
+		//根据文件名得到所有json格式的对象
+		List<JSONObject> jsonObjects=parseJsonFileToJsonObjects_001(url);
+		return jsonObjects;
+		
+	}
+	
+	
+	private List<JSONObject> parseJsonFileToJsonObjects_001(String url) {
+		List<JSONObject> jsons=new LinkedList<JSONObject>();
+		List<String> names=findAllFileNameFromUrl(url);
+		//processNames(names);//处理掉.json后缀
+		for(int i=0;i<names.size();i++) {
+			String qualifiedName=url+names.get(i);
+			JSONObject jsonObject=parseJsonFileToJsonObject(qualifiedName);
+			jsons.add(jsonObject);
+			
+		}
+		return jsons;
+	}
+	/**
+	 * 
+	 * 将两个文件拼接起来
+	 * @param newFilename 新的文件的名字
+	 * @param type   新的文件的类型(jsonobj还是jsonarray)
+	 * @param names  要拼接的子文件的名字
+	 */
+	public void connection(String newFilename, String type, List<String> names) {
+		if("jsonarray".equals(type)) {
+			JSONArray jsonArray=new JSONArray();
+			for(int i=0;i<names.size();i++) {
+				JSONObject file=findFileByName("d://json/",names.get(i));
+				if(file!=null) {
+					jsonArray.add(file.get("data"));
+				}
+			}
+			FileJson fileJson=new FileJson();
+			fileJson.setFilename(newFilename);
+			fileJson.setData(jsonArray.toString());
+			fileJson.setDescription("");
+			saveFile("d://json/", fileJson);
+		}else if("jsonobj".equals(type)) {//组装为一个对象
+			JSONObject jsonObject=new JSONObject();
+			for(int i=0;i<names.size();i++) {
+				JSONObject file=findFileByName("d://json/",names.get(i));
+				if(file!=null) {
+					
+					String name=names.get(i);
+					name=name.substring(0, name.indexOf("."));
+					jsonObject.put(name, file.get("data"));
+					
+				}
+			}
+			FileJson fileJson=new FileJson();
+			fileJson.setFilename(newFilename);
+			fileJson.setData(jsonObject.toString());
+			fileJson.setDescription("");
+			saveFile("d://json/", fileJson);
+		}
+		
+	}
+	/**
+	 * 
+	 * 根据文件名查找文件
+	 * @param url 文件的目录
+	 * @param name 文件名
+	 * @return  如果没有找到则为null，返回的为一个json格式的，预定义的格式的文件对象
+	 */
+	public JSONObject findFileByName(String url,String name) {	
+		List<JSONObject> jsonObjects=findAllFileByUrl_001(url);
+		JSONObject result=null;
+		for(int i=0;i<jsonObjects.size();i++) {
+			JSONObject jsonObject=jsonObjects.get(i);
+			if(name.equals(jsonObject.getString("filename"))) {
+				result=jsonObject;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * 因为是标存储的是标准的格式，所以要先进行转化再展示
+	 * @param url 文件的目录
+	 * @param filename 文件名
+	 */
+	public void showfile(String url,String filename) {
+		JSONObject file=findFileByName(url, filename);
+		if(file!=null) {
+			String data=file.getString("data");
+			System.out.println(JsonManagement.formatJson(data));
+			
+		}
+		
+	}
+	
 }

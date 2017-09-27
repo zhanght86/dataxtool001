@@ -135,22 +135,22 @@ var rows=[];
 //初始化弹出窗口
 function initwin(){
 	//初始化弹出窗口里面的下拉框
-	$('#cc').combobox({    
-	    data:[
-	    	{    
-	    	    "id":1,    
-	    	    "text":"reader",
-	    	    "selected":true  
-	    	   
-	    	},{    
-	    	    "id":2,    
-	    	    "text":"parameter"   
-	    	},{    
-	    	    "id":3,    
-	    	    "text":"column",    
-	    	     
-	    	}
-	    ],  
+	$('#cc').combobox({  
+		 
+	    data:[{
+    	    "id":1,    
+    	    "text":"reader",
+    	    "selected":true  
+    	   
+    	},{    
+    	    "id":2,    
+    	    "text":"parameter"   
+    	},{    
+    	    "id":3,    
+    	    "text":"column",    
+    	     
+    	}
+    ],  
 	    valueField:'id',    
 	    textField:'text'   
 	}); 

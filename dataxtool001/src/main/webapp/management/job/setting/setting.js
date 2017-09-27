@@ -1,3 +1,10 @@
+//清空各种表格内容
+function flush(){
+	//每次打开属性表单的时候都需要清空
+	$('#pg').datagrid('loadData',{total:0,rows:[]});
+	$('#dg').datagrid('loadData',{total:0,rows:[]});
+}
+
 //ajax提交
 function aj(type,url,arg,callsuccess,callerror){
     $.ajax({
@@ -13,11 +20,31 @@ function aj(type,url,arg,callsuccess,callerror){
         }
     });
 }
+//为组装按钮设置值
+function initbtn(){
+	//为按钮添加店家时间
+    $('#zj').bind('click', function(){       
+        //获得组装的类型
+        var zjop=$("#zjop").combobox('getText');
+        //得到所有的列的数据
+       // var rowselect=$('#dg').datagrid("getSelected");
+        var rows = $("#dg").datagrid("getSelections");//json对象
+        var newfilename=$("#newfilename").val();
+    	//提交
+    	var json={};
+    	json.type=zjop;
+    	json.rows=rows;
+    	json.newfilename=newfilename;
+    	var arg="arg="+JSON.stringify(json);
+    	url= "http://localhost:8080/dataxtool001/datax/job/setting/connect.do";
+    	aj("POST",url,arg);
+    	$('#dg').datagrid('reload');  
+    }); 
+}
 
 //展示一个表格
 function showform(){
 	//每次打开属性表单的时候都需要清空
-	$('#pg').datagrid('loadData',{total:0,rows:[]});
 	$('#win').window('open');  // open a window 
 }
 
@@ -26,40 +53,41 @@ function closeform(){
 	$('#win').window('close');  // open a window 
 }
 //添加一个reader
-function addwriter(){
+function addreader(){
+
 	//获得所有行的数据
 	var rows = $("#pg").datagrid("getRows");//json对象
-    var filename=$("#filename").val();
+	var type=$('#cc').combo('getText');
+	var filename=$("#filename").val();
 	//提交
-	var json={
-			"filename":filename,
-			"rows":rows
-	}	
+	var json={};
+	json.type=type;
+	json.rows=rows;
+	json.filename=filename;
 	var arg="reader="+JSON.stringify(json);
-	url= "http://localhost:8080/dataxtool001/datax/job/writer/addstreamreader.do";
+	url= "http://localhost:8080/dataxtool001/datax/job/setting/addsetting.do";
 	aj("POST",url,arg);
-	alert("添加成功");
-	$('#win').window('close');
-	$('#dg').datagrid('reload');    
-
+	closeform();
+	$('#dg').datagrid('reload'); 
+	
 }
 
 //根据文件名删除指定的文件，使用异步提交
 function deletefilebyfilename(filename){
 	var arg="filename="+filename;
-	url= "http://localhost:8080/dataxtool001/datax/job/writer/deletefilebyfilename.do";
+	url= "http://localhost:8080/dataxtool001/datax/job/setting/deletesetting.do";
 	aj("post", url, arg);
 	$('#dg').datagrid('reload');    
 }
 
 //通过文件名到	查找详细的文件信息
-function findWriterByFilename() {
+function findReaderByFilename() {
 	//只会编辑第一个选中的按钮
 	//返回第一个被选中的行
 	var rowselect=$('#dg').datagrid("getSelected");
 	var filename=rowselect.filename;
 	//弹出窗口
-	var url="http://localhost:8080/dataxtool001/datax/job/writer/findwriterbyfilename.do";
+	var url="http://localhost:8080/dataxtool001/datax/job/setting/findsetting.do";
 	//异步加载数据
 	var arg="filename="+filename;
 	url=url+"?"+arg;
@@ -79,13 +107,11 @@ function findWriterByFilename() {
 function initdatagrid(){
 	//初始化表格
 	$('#dg').datagrid({ 
-		url:"/dataxtool001//datax/job/writer/findallreader.do",
+		url:"/dataxtool001/datax/job/setting/findallsetting.do",
 	    columns:[	//定义列
 	    	[   
 	    	{field:'checkbox',title:'checkbox',width:100,checkbox:true},
-	    	{field:'filename',title:'filename',width:100}, 
-	    	{field:'name',title:'Name',width:100},    
-	        {field:'type',title:'type',width:100,align:'right'}    
+	    	{field:'filename',title:'filename',width:100},     
 	        ]
 	    	],
 	    pagination:true,//分页
@@ -95,7 +121,7 @@ function initdatagrid(){
 			iconCls: 'icon-edit',
 			handler: function(){	//编辑按钮
 
-				findWriterByFilename();
+				findReaderByFilename();
 			}
 		},'-',{
 			iconCls: 'icon-help',
@@ -103,7 +129,9 @@ function initdatagrid(){
 		},'-',{
 			iconCls:'icon-add',
 			handler: function(){
-				
+				//刷新选项卡
+				rows=[];
+				$('#pg').propertygrid('loadData', rows);
 				//弹出一个表单
 				showform();
 			}
@@ -130,52 +158,39 @@ function initdatagrid(){
 		]
 	}); 
 }
-
-var rows=[];
 //初始化弹出窗口
 function initwin(){
 	//初始化弹出窗口里面的下拉框
-	$('#cc').combobox({    
-	    data:[
-	    	{    
-	    	    "id":1,    
-	    	    "text":"reader",
-	    	    "selected":true  
-	    	   
-	    	},{    
-	    	    "id":2,    
-	    	    "text":"parameter"   
-	    	},{    
-	    	    "id":3,    
-	    	    "text":"column",    
-	    	     
-	    	}
-	    ],  
+	$('#cc').combobox({  
+	    data:[{
+    	    "id":1,    
+    	    "text":"json",
+    	    "selected":true  
+    	   
+    	},{    
+    	    "id":2,    
+    	    "text":"array"   
+    	}
+    ],  
 	    valueField:'id',    
 	    textField:'text'   
 	}); 
 	
 	//为按钮绑定响应事件,根据下拉框的不同的值创建不同的行
     $('#addbutton').bind('click', function(){
-    	//var rows=[];
+    	var rows = $("#pg").datagrid("getRows");//json对象
 		var row = {    
 				  "name":"",    
 				  "value":"",    
 				  "group":"",    
 				  "editor":'text'   
 				}; 
+		
 		row.name=$("#shurukuang").val();
-		row.group=$('#cc').combobox('getText');
-		if(row.group=="column"){
-			row.name="type/value";
-			row.value=$("#shurukuang").val();
-		}else if(row.group=="filename"){
-			row.name="filename";
-			row.group="filename";
-			row.value=$("#shurukuang").val();
-		}
+		row.value=$("#shurukuang2").val();
     	rows.push(row);
     	$('#pg').propertygrid('loadData', rows);
+    	
        
     });  
     
@@ -190,10 +205,11 @@ function initwin(){
         ]],
      
 	});
+    
 	
 	//提交添加的数据
     $('#committable').bind('click', function(){ 
-    	addwriter();
+    	addreader();
     });   
 	
 }
@@ -202,8 +218,8 @@ function init(){
 	//初始化列表
 	initdatagrid();
 	initwin();
+	initbtn();//组装的点击按钮
 }
-
 //页面加载完毕之后进行js的初始化
 $(function(){
 	init();//组件的初始化
