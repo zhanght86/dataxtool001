@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.dao.domain.JsonFile;
 import com.json.Configuration;
 import com.json.JsonManagement;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 @Service
@@ -17,8 +20,8 @@ public class ReaderManagement {
 	@Autowired
 	private JsonManagement jsonManagement=new JsonManagement();
 	public JSONObject processReader() {
-		JSONObject parameter=jsonManagement.createNewJsonObject();
-		JSONObject reader=jsonManagement.createNewJsonObject();
+		JSONObject parameter=new JSONObject();
+		JSONObject reader=new JSONObject();
 		reader.put("name", "mysqlreader");
 		reader.put("parameter", parameter);
 		return reader;
@@ -127,7 +130,7 @@ public class ReaderManagement {
 	 * @param readerJson
 	 * @param url
 	 */
-	public void saveReader(JSONObject readerJson, String url) {
+/*	public void saveReader(JSONObject readerJson, String url) {
 		//在保存之前要进行处理，因为readerjson中不是标准的reader格式
 		url=url+readerJson.getString("filename");
 		JSONObject formatReader=processRows(readerJson);
@@ -137,15 +140,15 @@ public class ReaderManagement {
 		jsonObject.put("data", formatReader.toString());
 		jsonManagement.JSONToFile(jsonObject, url);
 		
-	}
+	}*/
 	/**
 	 * 
 	 * 处理前台传来的json
+	 * 前台传来的数据不是标准的格式，需要进行处理转化为json格式的
 	 * @param readerJson
 	 * @return
 	 */
 	private JSONObject processRows(JSONObject readerJson) {
-		
 		JSONObject formateReader=new JSONObject();
 		JSONArray rows=readerJson.getJSONArray("rows");
 		//一行一行的处理数据
@@ -166,25 +169,8 @@ public class ReaderManagement {
 			
 		}
 		return formateReader;
+
 	}
-	/**
-	 * 
-	 * 查询所有的reader并返回
-	 * 会从默认的路径中寻找
-	 * 查找的的数据不是标准的readerjson格式
-	 * {
-	 * 	filename:
-	 * 	data:
-	 * }
-	 * @return
-	 */
-	public List<JSONObject> findAllReaders() {
-		String url=Configuration.readerurl;
-		List readers=jsonManagement.parseJsonFileToJsonObjects(url);
-		return readers;
-		
-	}
-	
 	/**
 	 * 
 	 * 将标准格式的json转化为前端需要的格式
@@ -220,7 +206,7 @@ public class ReaderManagement {
 	 * @param filename
 	 * @return
 	 */
-	public JSONObject findReaderByFilename(String filename) {
+/*	public JSONObject findReaderByFilename(String filename) {
 		List<JSONObject> jsons=findAllReaders();
 		JSONObject jsonObject=null;
 		for(int i=0;i<jsons.size();i++) {
@@ -229,6 +215,36 @@ public class ReaderManagement {
 			}
 		}
 		return jsonObject;
+	}*/
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 根据id查找对应的reader,并将数据转化为前台需要的格式
+	 *是一个多行的数据
+	 *
+	 */
+	public JSONObject findReaderById(int id) {
+		//List<JSONObject> jsons=findAllReaders();
+		List<JsonFile> jsonFiles=jsonManagement.findAllPrimaryJsonFiles();
+		JSONObject jsonObject=new JSONObject();
+		JsonFile jsonFile=null;
+		for(int i=0;i<jsonFiles.size();i++) {
+			if(id==jsonFiles.get(i).getId()) {
+				jsonFile=jsonFiles.get(i);
+			}
+		}
+		if(jsonFile==null) {
+			System.out.println("没有指定id的reader");
+			return null;
+		}else {
+			JSONObject data =JSONObject.fromObject(jsonFile.getData());
+			jsonObject.put("filename", jsonFile.getFilename());
+			jsonObject.put("type", jsonFile.getType());
+			jsonObject.put("id", jsonFile.getId());
+			jsonObject.put("data",translateReaderJson(data));
+			return jsonObject;
+		}
+
 	}
 	/**
 	 * 
@@ -242,18 +258,18 @@ public class ReaderManagement {
 	 * @param jsonObject
 	 * @return
 	 */
-	public JSONObject translateReaderJson(JSONObject jsonObject) {
+	public JSONArray translateReaderJson(JSONObject data) {
 		// TODO Auto-generated method stub
 		JSONObject result=new JSONObject();
 		JSONArray rows=new JSONArray();
 		
-		result.put("filename", jsonObject.getString("filename"));
+		//result.put("filename", jsonObject.getString("filename"));
 		
 		
-		JSONObject reader=jsonObject.getJSONObject("data");
-		Map names=findAllName(reader);
-		Map parameters=findAllParameters(reader);
-		JSONArray column=findColumn(reader);
+		//JSONObject reader=jsonObject.getJSONObject("data");
+		Map names=findAllName(data);
+		Map parameters=findAllParameters(data);
+		JSONArray column=findColumn(data);
 		
 		JSONArray arr1=processNames(names);
 		JSONArray arr2=processParameters(parameters);
@@ -261,8 +277,8 @@ public class ReaderManagement {
 		rows.addAll(arr1);
 		rows.addAll(arr2);
 		rows.addAll(arr3);
-		result.put("rows", rows);
-		return result;
+		//result.put("rows", rows);
+		return rows;
 	}
 
 	private JSONArray processColumn(JSONArray column) {
@@ -380,7 +396,7 @@ public class ReaderManagement {
 	 * 找到所有的文件的名字
 	 * @return
 	 */
-	public List<String> findAllReadersName() {
+/*	public List<String> findAllReadersName() {
 		List<JSONObject> jsons=findAllReaders();
 		List<String> names=new LinkedList<String>();
 		for(int i=0;i<jsons.size();i++) {
@@ -388,6 +404,117 @@ public class ReaderManagement {
 		}
 		return names;
 		
+	}*/
+	
+	
+	/**
+	 *@param rows 
+	 * @param page 
+	 * @ahthor wang
+	 *@date  2017.10.13
+	 *@description 从后台得到所有的类型type=reader的json对象
+	 *	并且转化为前台需要的数据格式
+	 *	{
+	 *		data:
+	 *		total
+	 *	}
+	 *
+	 */
+	public List<JSONObject> findAllReaders(int page, int rows) {
+		List<JsonFile> jsonFiles=jsonManagement.findAllPrimaryJsonFiles();
+		//得到偶有类型为reader的json文件
+		List<JsonFile> readerJsonFiles=getTypeIsReader(jsonFiles);
+		//转化为前台需要的reader的格式
+		List<JSONObject> jsonObjects=translateJsonFilesToJsonObjects(readerJsonFiles);
+		return jsonObjects;
+		
 	}
+	
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 判断找出type为reader的jsonFile
+	 *
+	 */
+	private List<JsonFile> getTypeIsReader(List<JsonFile> jsonFiles) {
+		List<JsonFile> result=new LinkedList<JsonFile>();
+		for(int i=0;i<jsonFiles.size();i++) {
+			JsonFile jsonFile=jsonFiles.get(i);
+			if("reader".equals(jsonFile.getType())) {
+				result.add(jsonFile);
+			}
+			
+		}
+		return result;
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 将后台传来的数据转化为前台reader需要的格式
+	 *	 * 后台传来的数据
+	 * {
+	 * 	filename:
+	 * 	id:
+	 * 	type:
+	 * }
+	 * 
+	 * 前台需要的格式
+	 * {
+	 * 	filename:
+	 * 	id:
+	 * 	type:reader  //查出类型为reader的json数据
+	 * }
+	 *
+	 */
+	private JSONObject translateJsonFileToJsonObject(JsonFile jsonFile) {
+		JSONObject jsonobject=new JSONObject();
+		jsonobject.put("filename", jsonFile.getFilename());
+		jsonobject.put("id", jsonFile.getId());
+		jsonobject.put("type", jsonFile.getType());
+		return jsonobject;
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 将一批jsonFIle转化为reader需要的jsonObject
+	 *
+	 */
+	private List<JSONObject> translateJsonFilesToJsonObjects(List<JsonFile> jsonFiles){
+		List<JSONObject> jsonObjects=new LinkedList<JSONObject>();
+		for(int i=0;i<jsonFiles.size();i++) {
+			JsonFile jsonFile=jsonFiles.get(i);
+			JSONObject jsonObject=translateJsonFileToJsonObject(jsonFile);
+			jsonObjects.add(jsonObject);
+		}
+		return jsonObjects;
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 保存一个reader
+	 *	前台传来的格式需要进行处理
+	 *
+	 */
+	public void saveReader(JSONObject readerJson) {
+		//在保存之前要进行处理，因为readerjson中不是标准的reader格式
+		JSONObject formatReader=processRows(readerJson);
+		JSONObject jsonObject=new JSONObject();
+		String filename=readerJson.getString("filename");
+		String data=formatReader.toString();
+		String type="reader";
+		jsonManagement.save(filename, data, type);
+		
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 根据指定的id来删除reader
+	 *
+	 */
+	public void deleteReaderById(int i) {
+		jsonManagement.deleteJsonFileById(i);
+	}
+
+
 	
 }

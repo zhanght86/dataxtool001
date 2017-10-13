@@ -19,6 +19,7 @@ import net.sf.json.JSONObject;
 //业务层的类，由spring容器来管理
 @Service
 public class DataxServiceManagement {
+	
 	@Autowired
 	private DataxManagement dataxManagement;
 	/**

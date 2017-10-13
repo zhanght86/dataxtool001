@@ -1,12 +1,9 @@
 package com.dataxmanagement;
 
 
-
-import java.util.LinkedList;
 import java.util.List;
 
-import javax.json.Json;
-import javax.json.JsonObject;
+import javax.validation.constraints.Null;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,8 +32,6 @@ import net.sf.json.JSONObject;
  */
 @Service
 public class DataxManagement {
-/*	@Autowired
-	private JobConfigurationManagement jcm=new JobConfigurationManagement();*/
 	@Autowired
 	private JobManagement jobManagement;
 	@Autowired
@@ -70,20 +65,12 @@ public class DataxManagement {
 	 * 根据文件名查询一个对应的reader，并且返回标准的前台格式
 	 * 
 	 */
-	public JSONObject findReaderByFilename(String filename) {
+/*	public JSONObject findReaderByFilename(String filename) {
 		
 		JSONObject jsonObject=readerManagement.findReaderByFilename(filename);
 		return readerManagement.translateReaderJson(jsonObject);
-	}
-	/**
-	 * 
-	 * 删除指定文件名的json
-	 * @param datajson
-	 */
-	public void deleteFileByFilename(String filename) {
+	}*/
 
-		readerManagement.deleteFileByFilename(filename);
-	}
 	/**
 	 * 
 	 * 
@@ -101,22 +88,24 @@ public class DataxManagement {
 	
 	/**
 	 * 
-	 * 得到所有的reader，返回的时候会返回reader和total
+	 * 得到所有的类型为reader的json，返回的时候会返回reader和total
 	 * 这里的reader是前台格式的reader
 	 *  	{ 
 			"name":"streamreader",
 			"filename":"reader1",
 			"type":"reader"
 			}
+			
+			
 	 * @param page
 	 * @param rows
 	 * @return
 	 */
-	public JSONObject findAllReader(int page, int rows) {
+/*	public JSONObject findAllReader(int page, int rows) {
 		List<JSONObject> readers=readerManagement.findAllReaders();
-		JSONObject result=readerManagement.processReadersToResult(readers);
-		return result;
-	}
+		//JSONObject result=readerManagement.processReadersToResult(readers);
+		return null;
+	}*/
 	/**
 	 * 
 	 * 查询所有的writer
@@ -151,16 +140,7 @@ public class DataxManagement {
 		result.put("rows", rows);
 		return result;
 	}
-	/**
-	 * 
-	 * 保存添加的reader
-	 * @param readerJson
-	 * @return
-	 */
-	public void addReader(JSONObject readerJson) {
-		String url=Configuration.readerurl;
-		readerManagement.saveReader(readerJson,url);
-	}
+
 	public void addWriter(JSONObject writerJson) {
 		String url=Configuration.writerurl;
 		writerManagement.saveWriter(writerJson,url);
@@ -230,11 +210,11 @@ public class DataxManagement {
 	 * @param rows 行号
 	 * @return
 	 */
-	public List<String> findAllReaderName(int page, int rows) {
+/*	public List<String> findAllReaderName(int page, int rows) {
 		List<String> names=readerManagement.findAllReadersName();
 		
 		return names;
-	}
+	}*/
 	public List<String> findAllWriterName(int i, int j) {
 		List<String> names=writerManagement.findAllWriterName();
 		return names;
@@ -251,7 +231,7 @@ public class DataxManagement {
 	 * @param writer
 	 * @param setting
 	 */
-	public void pg(String reader, String writer, String setting) {
+/*	public void pg(String reader, String writer, String setting) {
 		JSONObject readerjson=readerManagement.findReaderByFilename(reader);
 		JSONObject writerjson=writerManagement.findWriterByFilename(writer);
 		JSONObject settingjson=settingManagement.findPrimarySettingByFilename(setting);
@@ -273,7 +253,7 @@ public class DataxManagement {
 		fileJson.setDescription("");
 		fileJson.setFilename("job.json");
 		jsonManagement.saveFile(Configuration.joburl, fileJson);
-	}
+	}*/
 	/**
 	 * 
 	 * 查询到所有的json，并且转化为前台的格式

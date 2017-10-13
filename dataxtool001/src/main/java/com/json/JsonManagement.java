@@ -11,16 +11,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.parser.JSONToken;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
+import com.dao.domain.JsonFile;
+import com.dao.mapping.JsonFileMapper;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import net.sf.json.util.JSONTokener;
 /**
  * 该对象是用来处理json，对于json的增删改查
  * 同时可以保存json格式对象到文件中
@@ -38,35 +39,8 @@ import net.sf.json.util.JSONTokener;
  */
 @Service
 public class JsonManagement {
-	public JSONObject translateStringToJSONObiect(String jsonOfString) {
-		JSONObject jsonObject=null;
-		jsonObject=JSONObject.fromObject(jsonOfString);
-		return jsonObject;
-	}
-	public String parseJsonFileToString(String uri) {
-		if(uri==null||"".equals(uri)) {//浣跨敤榛樿鐨勮矾寰�
-			uri="d://job.json";
-		}
-		File f=new File(uri);
-		StringBuffer json=new StringBuffer();
-		try {
-			InputStream in=new FileInputStream(f);
-			BufferedReader read=new BufferedReader(new InputStreamReader(in, "UTF-8"));
-			String line="";
-			while((line=read.readLine())!=null) {
-				json.append(line);
-				System.out.println(line);
-			}
-			in.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("IO寮傚父");
-			e.printStackTrace();
-		}
-		return json.toString();
-	}
+	@Resource
+	private JsonFileMapper jsonFileMapper;
 	//解析一个文件
 	public JSONObject parseJsonFileToJsonObject(String uri) {
 		if(uri==null||"".equals(uri)) {//浣跨敤榛樿鐨勮矾寰�
@@ -95,7 +69,7 @@ public class JsonManagement {
 	}
 	
 	//从指定的url中加载所有的json,url为目录
-	public List<JSONObject> parseJsonFileToJsonObjects(String url){
+/*	public List<JSONObject> parseJsonFileToJsonObjects(String url){
 		List<JSONObject> jsons=new LinkedList<JSONObject>();
 		List<String> names=findAllFileNameFromUrl(url);
 		for(int i=0;i<names.size();i++) {
@@ -106,16 +80,7 @@ public class JsonManagement {
 		}
 		return jsons;
 		
-	}
-
-
-	
-	//处理单个文件的后缀
-	private String processName(String name) {
-		String string=name.substring(0,name.indexOf("."));
-		String[] s=name.split("/.");
-		return string; 
-	}
+	}*/
 	//得到目录下面的所有文件的名字，忽略子目录，只得到文件的名字
 	public List<String> findAllFileNameFromUrl(String  url){
 		List<String> names=new LinkedList<String>();
@@ -135,32 +100,6 @@ public class JsonManagement {
 		}
 		return names;
 	}
-	
-	public JSONObject createNewJsonObject() {
-		JSONObject json=new JSONObject();
-		return json;
-	}
-	public void addJsonObject(String key,String value,JSONObject json) {
-		json.put(key, value);
-	}
-	public Object stringToJavaBean(String s) {
-		return null;
-	}
-	
-	public JSONArray listToJsonArray(List l) {
-		JSONArray json=JSONArray.fromObject(l);
-		return json;
-	}
-	
-	public JSONObject mapToJsonObject(Map map) {
-		JSONObject json=JSONObject.fromObject(map);
-		return json;	
-	}
-	public JSONArray mapToJsonArray(Map map) {
-		JSONArray json=JSONArray.fromObject(map);
-		return json;
-		
-	}
 	/**
 	 *	找到指定名字的节点 
 	 * 	第四个参数用来判断是要知道该节点，还是该节点的父亲节点
@@ -172,16 +111,6 @@ public class JsonManagement {
 			return c.getJoParent();
 		}
 		return c.getJo();
-	}
-	/**
-	 * 在遍历的过程中便进行修改
-	 * value可以有三种对象String，josnArray，jsonObject
-	 * 
-	 */
-	public void updateJSONByKey(String key,Object value,JSONObject obj) {
-		Context c=new Context();
-		anzlize(key,c,obj);
-		anzlizeAndUpdate(key,value,obj);
 	}
 
 	/**
@@ -312,7 +241,6 @@ public class JsonManagement {
  
         return sb.toString();
     }
- 
     /**
      * 娣诲姞space
      * @param sb
@@ -323,13 +251,6 @@ public class JsonManagement {
             sb.append('\t');
         }
     }
-    
-    //鏍煎紡鍖栬緭鍑簀son
-    public static void showJson(Object json) {
-    	String s=json.toString();
-    	System.out.println(JsonManagement.formatJson(s));
-    }
-    
     public static void StringToFile(String json,String url) {
     	  // TODO Auto-generated method stub
         File f=new File(url);//
@@ -615,8 +536,8 @@ public class JsonManagement {
 	 */
 	public List<JSONObject> findAllFileByUrl(String url) {
 		//根据文件名得到所有json格式的对象
-		List<JSONObject> jsonObjects=parseJsonFileToJsonObjects(url);
-		return jsonObjects;
+		//List<JSONObject> jsonObjects=parseJsonFileToJsonObjects(url);
+		return null;
 		
 	}
 	
@@ -717,8 +638,100 @@ public class JsonManagement {
 		if(file!=null) {
 			String data=file.getString("data");
 			System.out.println(JsonManagement.formatJson(data));
-			
 		}
+	}
+	
+
+	/**
+	 * 获得文件的数据
+	 * @param url 文件的目录
+	 * @param filename 文件名
+	 * @return
+	 */
+	public String getData(String url,String filename) {
+		JSONObject file=findFileByName(url, filename);
+		String data=file.getString("data");
+		return data;
+	}
+	/**
+	 * 
+	 * 将指定文件的数据保存为另外一个文件
+	 * 用来将文件转化为datax需要的json
+	 * @param fileurl 指定的文件路径
+	 * @param filename  文件的名字
+	 * @param dataurl   要保存的数据的路径
+	 * @param datafilename  数据文件的名字
+	 */
+	public void saveFileData(String fileurl,String filename,String dataurl,String datafilename) {
+		String data=getData(fileurl, filename);
+		StringToFile(data, dataurl+datafilename);
+	}
+	/**
+	 * 从指定的路径显示json对象
+	 * 
+	 */
+	public void showJson(String url,String filename) {
+		findFileByName(url, filename);
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.12
+	 *@description
+	 *	该方法是用来保存一个json类型文件的
+	 *	保存结果会返回success或者是fail
+	 * 
+	 */
+	public String save(String filename, String data, String type) {
+		JsonFile jsonFile=new JsonFile();
+		jsonFile.setFilename(filename);
+		jsonFile.setData(data);
+		jsonFile.setType(type);
+		jsonFileMapper.saveJson(jsonFile);
+		return "success";
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 获得数据库中所有的json
+ 		返回的json对象的格式
+	 		{ 
+			"name":"streamreader",
+			"filename":"reader1",
+			"type":"reader",
+			data:""
+			}
+	 *
+	 */
+	public List<JSONObject> findAllJsonFiles() {
+		List<JsonFile> jsonFiles=jsonFileMapper.selectAllJson();
+		List<JSONObject> jsonObjects=new LinkedList<JSONObject>();
+		for(int i=0;i<jsonFiles.size();i++) {
+			JsonFile jsonFile=jsonFiles.get(i);
+			JSONObject jsonObject=JSONObject.fromObject(jsonFile);
+			jsonObjects.add(jsonObject);
+		}
+		return jsonObjects;
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 得到的是所有的原生的jsonFile，没有被处理
+	 *
+	 */
+	public List<JsonFile> findAllPrimaryJsonFiles(){
+		List<JsonFile> jsonFiles=jsonFileMapper.selectAllJson();
+		return jsonFiles;
+	}
+	
+	
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.13
+	 *@description 根据jsonfile的id来删除
+	 *
+	 */
+	public void deleteJsonFileById(int id) {
+		jsonFileMapper.deleteJson(id);
 		
 	}
 	

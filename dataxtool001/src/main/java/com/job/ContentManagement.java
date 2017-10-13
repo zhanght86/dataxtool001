@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.json.JsonManagement;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -17,8 +18,8 @@ public class ContentManagement {
 	private WriterManagement writerManagement=new WriterManagement();
 	public JSONArray processContent() {
 		JSONArray content=new JSONArray();
-		JSONObject obj=jsonManagement.createNewJsonObject();
-		JSONObject obj1=jsonManagement.createNewJsonObject();
+		JSONObject obj=new JSONObject();
+		JSONObject obj1=new JSONObject();
 		JSONObject reader=readerManagement.processReader();
 		JSONObject writer=writerManagement.processWriter();
 		obj.put("reader", reader);
@@ -29,7 +30,7 @@ public class ContentManagement {
 	}
 	public JSONArray processContent(JSONObject reader,JSONObject writer) {
 		JSONArray content=new JSONArray();
-		JSONObject obj=jsonManagement.createNewJsonObject();
+		JSONObject obj=new JSONObject();
 		obj.put("reader", reader);
 		obj.put("writer", writer);
 		content.add(obj);

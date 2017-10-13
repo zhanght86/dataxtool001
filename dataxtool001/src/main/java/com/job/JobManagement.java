@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.alibaba.fastjson.parser.JSONScanner;
+
 import com.json.Configuration;
 import com.json.JsonManagement;
 
@@ -14,6 +15,7 @@ import net.sf.json.JSONObject;
 
 @Controller
 public class JobManagement {
+	
 	@Autowired
 	private JsonManagement jsonManagement=new JsonManagement();
 	public List<JSONObject> findAllJobs() {

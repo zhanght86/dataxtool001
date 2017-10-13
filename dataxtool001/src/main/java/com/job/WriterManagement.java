@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.json.Configuration;
+
 import com.json.JsonManagement;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -18,8 +20,8 @@ import net.sf.json.JSONObject;
 public class WriterManagement {
 	private JsonManagement jsonManagement=new JsonManagement();
 	public JSONObject processWriter() {
-		JSONObject parameter=jsonManagement.createNewJsonObject();
-		JSONObject reader=jsonManagement.createNewJsonObject();
+		JSONObject parameter=new JSONObject();
+		JSONObject reader=new JSONObject();
 		reader.put("name", "mysqlwriter");
 		reader.put("parameter", parameter);
 		return reader;

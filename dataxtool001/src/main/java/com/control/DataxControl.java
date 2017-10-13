@@ -1,12 +1,5 @@
 package com.control;
-
-
-import java.util.HashMap;
 import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +11,6 @@ import com.domain.op.DataxReaderOP;
 import com.json.JsonManagement;
 import com.service.DataxServiceManagement;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
