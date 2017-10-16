@@ -14,7 +14,6 @@
 	<link rel="stylesheet" href="/dataxtool001/easyui/themes/default\easyui.css">
 	<link rel="stylesheet" href="/dataxtool001/easyui/themes/icon.css">
 
-
 	
 	<script type="text/javascript" src="/dataxtool001/management/job/writer/writer.js"></script>
 </head>

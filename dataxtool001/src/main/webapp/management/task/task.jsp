@@ -11,7 +11,7 @@
 	<!-- 导入sasyui -->
 	<script type="text/javascript" src="/dataxtool001/easyui/jquery.easyui.min.js"></script>
 	<!-- 导入easyui的主样式文件样式 -->
-	<link rel="stylesheet" href="/dataxtool001/easyui/themes/default\easyui.css">
+	<link rel="stylesheet" href="/dataxtool001/easyui/themes/default/easyui.css">
 	<link rel="stylesheet" href="/dataxtool001/easyui/themes/icon.css">
 	 
 	 <script type="text/javascript" src="/dataxtool001/management/task/task.js"></script>
@@ -19,10 +19,10 @@
 	<body>   
 		<!-- job下拉框 -->
 		<input id="job" class="easyui-combobox" name="job"   
-	    data-options="valueField:'id',textField:'text',url:'http://localhost:8080/dataxtool001/datax/task/loadjob.do'" /> 
+	    data-options="valueField:'id',textField:'text',url:'/dataxtool001/datax/task/loadjob.do'" /> 
 		<!-- linux下拉框 -->
 		<input id="linux" class="easyui-combobox" name="linux"   
-   		 data-options="valueField:'id',textField:'text',url:'http://localhost:8080/dataxtool001/datax/task/loadlinux.do'" />
+   		 data-options="valueField:'id',textField:'text',url:'/dataxtool001/datax/task/loadlinux.do'" />
    		 <a id="btn" class="easyui-linkbutton" data-options="iconCls:'icon-search'">执行</a>  
 	</body> 
 </html>

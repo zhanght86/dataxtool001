@@ -12,8 +12,7 @@ function aj(type,url,arg,callsuccess,callerror){
         url: url,
         data: arg,
         success: function (data) {
-        	alert("success");
-        	alert(data);
+
         },
         error: function () {
         	alert("error");
@@ -61,7 +60,7 @@ function addjson(){
 	var json={};
 	json.filename=filename;
 	json.data=d;
-	var arg="reader="+JSON.stringify(json);
+	var arg="json="+JSON.stringify(json);
 	url= "http://localhost:8080/dataxtool001/datax/job/json/addjson.do";
 	aj("POST",url,arg);
 	closeform();
@@ -70,9 +69,9 @@ function addjson(){
 }
 
 //根据文件名删除指定的文件，使用异步提交
-function deletefilebyfilename(filename){
-	var arg="filename="+filename;
-	url= "http://localhost:8080/dataxtool001/datax/job/setting/deletesetting.do";
+function deletefilebyid(id){
+	var arg="id="+id;
+	url= "http://localhost:8080/dataxtool001/datax/job/json/deletejson.do";
 	aj("post", url, arg);
 	$('#dg').datagrid('reload');    
 }
@@ -104,11 +103,13 @@ function findReaderByFilename() {
 function initdatagrid(){
 	//初始化表格
 	$('#dg').datagrid({ 
-		url:"/dataxtool001/datax/job/setting/findallsetting.do",
+		url:"/dataxtool001/datax/job/json/findalljson.do",
 	    columns:[	//定义列
 	    	[   
 	    	{field:'checkbox',title:'checkbox',width:100,checkbox:true},
-	    	{field:'filename',title:'filename',width:100},     
+	    	{field:'filename',title:'filename',width:100},
+	    	{field:'type',title:'type',width:100},
+	    	{field:'id',title:'id',width:100}, 
 	        ]
 	    	],
 	    pagination:true,//分页
@@ -144,9 +145,10 @@ function initdatagrid(){
 				}else{
 					for(var i=0;i<rowselects.length;i++){
 						alert("删除");
-						var filename=rowselects[i].filename;
+						var id=rowselects[i].id;
 						//根据文件名删除指定的文件，然后异步提交
-						deletefilebyfilename(filename);
+						deletefilebyid(id);
+						$('#dg').datagrid('reload'); 
 					}
 					
 				}

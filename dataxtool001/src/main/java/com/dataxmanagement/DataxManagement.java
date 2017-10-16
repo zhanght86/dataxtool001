@@ -49,82 +49,21 @@ public class DataxManagement {
 		JSONObject reader= readerManagement.generateDefaultReader();
 		return reader;
 	}
-	/**
-	 * ִ��Ĭ�ϵ����/home/datax/bin/datax.py /home/datax/job/job.json
-	 * 
-	 */
-	public StringBuffer defaultExe() {
-		return lm.callDefaultShell();//Ĭ�ϵ�����
-		
-	}
-	public ReaderManagement getReaderManagement() {
-		return null;
-	}
 
-	/*
-	 * 根据文件名查询一个对应的reader，并且返回标准的前台格式
-	 * 
-	 */
-/*	public JSONObject findReaderByFilename(String filename) {
-		
-		JSONObject jsonObject=readerManagement.findReaderByFilename(filename);
-		return readerManagement.translateReaderJson(jsonObject);
-	}*/
 
-	/**
-	 * 
-	 * 
-	 * 删除指定文件名的文件
-	 * @param filename
-	 */
-	public void deleteFileByFilename_001(String filename) {
-		String url=Configuration.settingurl;
-		filename=url+filename;
-		jsonManagement.DeleteFolder(filename);
-	}
-	public void deleteWriterFileByFilename(String filename) {
-		writerManagement.deleteFileByFilename(filename);
-	}
-	
-	/**
-	 * 
-	 * 得到所有的类型为reader的json，返回的时候会返回reader和total
-	 * 这里的reader是前台格式的reader
-	 *  	{ 
-			"name":"streamreader",
-			"filename":"reader1",
-			"type":"reader"
-			}
+
+
+
+
+
+
 			
-			
-	 * @param page
-	 * @param rows
-	 * @return
-	 */
-/*	public JSONObject findAllReader(int page, int rows) {
-		List<JSONObject> readers=readerManagement.findAllReaders();
-		//JSONObject result=readerManagement.processReadersToResult(readers);
-		return null;
-	}*/
-	/**
-	 * 
-	 * 查询所有的writer
-	 * @param page
-	 * @param rows
-	 * @return
-	 */
-	public JSONObject findAllWriter(int page, int rows) {
-		List wirters=writerManagement.findAllWriters();
-		JSONObject result=processWritersToResult(wirters);
-		return result;
-	}
+
+
 
 	private JSONObject processWritersToResult(List writers) {
-		
 		JSONObject result=new JSONObject();
-		
 		JSONArray rows=new JSONArray();
-		
 		for(int i=0;i<writers.size();i++) {
 			JSONObject reader=(JSONObject) writers.get(i);
 			JSONObject row=new JSONObject();
@@ -141,18 +80,6 @@ public class DataxManagement {
 		return result;
 	}
 
-	public void addWriter(JSONObject writerJson) {
-		String url=Configuration.writerurl;
-		writerManagement.saveWriter(writerJson,url);
-		
-	}
-	public JSONObject findWriterByFilename(String filename) {
-		JSONObject jsonObject=writerManagement.findWriterByFilename(filename);
-		return writerManagement.translateWriterJson(jsonObject);
-
-	}
-	
-	
 	/**
 	 * 
 	 * 该方法用来保存前台传来的数据
@@ -176,24 +103,8 @@ public class DataxManagement {
 		fileJson.setData(data.toString());
 		return jsonManagement.saveFile(Configuration.settingurl, fileJson);
 	}
-	/**
-	 * 得到所有的setting的配置
-	 * 
-	 */
-	public List<JSONObject> findAllSetting() {
-		return settingManagement.findAllSetting();
-		
-	}
-	/**
-	 * 
-	 * 根据文件名查询setting
-	 * 查找不到返回为null
-	 * @param filename
-	 * @return
-	 */
-	public JSONObject findSettingByFilename(String filename) {
-		return settingManagement.findSettingByFilename(filename);
-	}
+
+
 	/**
 	 * 
 	 * 拼接json
@@ -223,37 +134,8 @@ public class DataxManagement {
 		List<String> names=settingManagement.findAllSettingName();
 		return names;
 	}
-	/**
-	 * 
-	 * 
-	 * 组装job任务
-	 * @param reader
-	 * @param writer
-	 * @param setting
-	 */
-/*	public void pg(String reader, String writer, String setting) {
-		JSONObject readerjson=readerManagement.findReaderByFilename(reader);
-		JSONObject writerjson=writerManagement.findWriterByFilename(writer);
-		JSONObject settingjson=settingManagement.findPrimarySettingByFilename(setting);
-		
-		JSONObject jsonObject=new JSONObject();
-		jsonObject.put("reader", readerjson.get("data"));
-		JSONObject w1=new JSONObject();
-		jsonObject.put("writer", writerjson.get("data"));
-		JSONArray content=new JSONArray();
-		content.add(jsonObject);
-		
-		
-		JSONObject job=new JSONObject();
-		job.put("setting", settingjson.get("data"));
-		job.put("content", content);
-		
-		FileJson fileJson=new FileJson();
-		fileJson.setData(job.toString());
-		fileJson.setDescription("");
-		fileJson.setFilename("job.json");
-		jsonManagement.saveFile(Configuration.joburl, fileJson);
-	}*/
+
+
 	/**
 	 * 
 	 * 查询到所有的json，并且转化为前台的格式

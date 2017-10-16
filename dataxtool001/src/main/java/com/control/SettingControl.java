@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 
 import com.dataxmanagement.DataxManagement;
+import com.job.SettingManagement;
 import com.json.FileJson;
 
 import javafx.scene.transform.Translate;
@@ -31,6 +32,8 @@ import net.sf.json.JSONObject;
 public class SettingControl {
 	@Autowired
 	private DataxManagement dataxManagement;
+	@Autowired
+	private SettingManagement settingManagement;
 	/**
 	 * 前台：
 	 * 		前台会传来数据的类型type，和每一行的数据
@@ -49,7 +52,8 @@ public class SettingControl {
 		String filename=jsonObject.getString("filename");
 		boolean result=false;//保存的结果
 		if("json".equals(type)) {
-			result=dataxManagement.saveJsonobj(filename,rows);
+			//result=dataxManagement.saveJsonobj(filename,rows);
+			result=settingManagement.saveSetting(filename,rows);
 		}
 		if(result==true) {
 			return "true";
@@ -66,16 +70,20 @@ public class SettingControl {
 	 * @return
 	 */
 	@RequestMapping("/datax/job/setting/findallsetting.do")
-	public @ResponseBody String findallsetting() {
-		//得到了所有的文件
-		List<JSONObject> jsonObjects=dataxManagement.findAllSetting();
+	public @ResponseBody String findallsetting(HttpServletRequest request) {
+		//第几页
+		int page=Integer.parseInt(request.getParameter("page"));
+		//一页多少数据
+		int rows=Integer.parseInt(request.getParameter("rows"));
+		List<JSONObject> jsonObjects=settingManagement.findAllSetting(page,rows);
 		return jsonObjects.toString();
 	}
 	
 	@RequestMapping("/datax/job/setting/deletesetting.do")
 	public @ResponseBody String deletesetting(HttpServletRequest request) {
-		String filename=request.getParameter("filename");
-		dataxManagement.deleteFileByFilename_001(filename);
+		String id=request.getParameter("id");
+		int i=Integer.parseInt(id);
+		settingManagement.deleteSettingById(i);
 		return "";
 	}
 	
@@ -104,12 +112,12 @@ public class SettingControl {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("/datax/job/setting/findsetting.do")
+/*	@RequestMapping("/datax/job/setting/findsetting.do")
 	public @ResponseBody String findsettingbyfilename(HttpServletRequest request) {
 		String filename= request.getParameter("filename");
 		JSONObject jsonObject=dataxManagement.findSettingByFilename(filename);
 		return jsonObject.toString();
-	}
+	}*/
 	
 	/**
 	 * 

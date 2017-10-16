@@ -68,8 +68,6 @@ public class ReaderControl {
 	public @ResponseBody String findReaderById(HttpServletRequest request) {
 		String id= request.getParameter("id");
 		int i=Integer.parseInt(id);
-		//JSONObject jsonObject=dataxManagement.findReaderByFilename(I);
-		//return jsonObject.getJSONArray("rows").toString();
 		JSONObject result=readerManagement.findReaderById(i);
 		return result.get("data").toString();
 	}
@@ -95,4 +93,8 @@ public class ReaderControl {
 		readerManagement.saveReader(readerJson);
 		return "";
 	}
+	
+	
+	
+	
 }

@@ -9,7 +9,7 @@
 	<!-- jquery以及easyui -->
 	<script type="text/javascript" src="/dataxtool001/jquery/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="/dataxtool001/easyui/jquery.easyui.min.js"></script>
-	<link rel="stylesheet" href="/dataxtool001/easyui/themes/default\easyui.css">
+	<link rel="stylesheet" href="/dataxtool001/easyui/themes/default/easyui.css">
 	<link rel="stylesheet" href="/dataxtool001/easyui/themes/icon.css">
 	
 	<script type="text/javascript" src="common.js"></script>	

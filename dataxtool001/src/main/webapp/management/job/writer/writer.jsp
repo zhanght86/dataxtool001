@@ -11,9 +11,8 @@
 	<!-- 导入sasyui -->
 	<script type="text/javascript" src="/dataxtool001/easyui/jquery.easyui.min.js"></script>
 	<!-- 导入easyui的主样式文件样式 -->
-	<link rel="stylesheet" href="/dataxtool001/easyui/themes/default\easyui.css">
+	<link rel="stylesheet" href="/dataxtool001/easyui/themes/default/easyui.css">
 	<link rel="stylesheet" href="/dataxtool001/easyui/themes/icon.css">
-
 
 	
 	<script type="text/javascript" src="/dataxtool001/management/job/writer/writer.js"></script>

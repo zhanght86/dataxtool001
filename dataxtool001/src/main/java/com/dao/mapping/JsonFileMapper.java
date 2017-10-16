@@ -16,6 +16,9 @@ import com.dao.domain.JsonFile;
 public interface JsonFileMapper {
 	@Select("select *  from t_json where id=#{id}")
 	public JsonFile getJsonFile(@Param("id")Integer id);
+	
+	@Select("select *  from t_json where type=#{type}")
+	public List<JsonFile> getJsonFilesByType(@Param("type")String type);
 
 	@Insert("insert into t_json(filename,data,type) values(#{filename},#{data},#{type})")
 	@Options(useGeneratedKeys=true,keyProperty="id")

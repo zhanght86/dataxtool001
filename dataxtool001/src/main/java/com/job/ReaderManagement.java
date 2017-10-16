@@ -514,6 +514,41 @@ public class ReaderManagement {
 	public void deleteReaderById(int i) {
 		jsonManagement.deleteJsonFileById(i);
 	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 得到所有的reader的名字
+ 	 *
+	 */
+	public List<String> findAllReadersName() {
+		List<String> names=new LinkedList<String>();
+		List<JSONObject> jsonObjects=jsonManagement.findAllJsonFiles();
+		for(int i=0;i<jsonObjects.size();i++) {
+			String filename=jsonObjects.get(i).getString("filename");
+			String type=jsonObjects.get(i).getString("type");
+			if("reader".equals(type)) {
+				names.add(filename);
+			}
+		
+		}
+		return names;
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 根据filename名字查找reader
+	 *
+	 */
+	public JsonFile findReaderByFilename(String filename) {
+		List<JsonFile> jsonFiles=jsonManagement.findJsonFilesByType("reader");
+		for(int i=0;i<jsonFiles.size();i++) {
+			JsonFile jsonFile=jsonFiles.get(i);
+			if(filename.equals(jsonFile.getFilename())) {
+				return jsonFile;
+			}
+		}
+		return null;
+	}
 
 
 	

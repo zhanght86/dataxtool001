@@ -79,12 +79,12 @@ function findWriterByFilename() {
 function initdatagrid(){
 	//初始化表格
 	$('#dg').datagrid({ 
-		url:"/dataxtool001//datax/job/writer/findallreader.do",
+		url:"/dataxtool001//datax/job/writer/findallwriter.do",
 	    columns:[	//定义列
 	    	[   
 	    	{field:'checkbox',title:'checkbox',width:100,checkbox:true},
 	    	{field:'filename',title:'filename',width:100}, 
-	    	{field:'name',title:'Name',width:100},    
+	    	{field:'id',title:'id',width:100},    
 	        {field:'type',title:'type',width:100,align:'right'}    
 	        ]
 	    	],

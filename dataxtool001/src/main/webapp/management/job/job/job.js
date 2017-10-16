@@ -32,7 +32,9 @@ function initdg(){
 	    url:'/dataxtool001/datax/job/job/findalljob.do',    
 	    columns:[[    
 	    	{field:'checkbox',title:'checkbox',width:100,checkbox:true},   
-	        {field:'name',title:'Name',width:100},    
+	        {field:'filename',title:'filename',width:100},  
+	        {field:'id',title:'id',width:100}, 
+	        {field:'type',title:'type',width:100}, 
 	         
 	    ]],
 	    pagination:true,//分页

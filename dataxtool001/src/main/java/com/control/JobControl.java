@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.dataxmanagement.DataxManagement;
+import com.job.JobManagement;
+import com.job.ReaderManagement;
+import com.job.SettingManagement;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -19,34 +23,21 @@ import net.sf.json.JSONObject;
 public class JobControl {
 	@Autowired
 	private DataxManagement dataxManagement;
-	@RequestMapping("/datax/job/job/loadcc1")
+	@Autowired
+	private JobManagement jobManagement;
+	
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 在开启页面的时候加载数据
+	 *	加载reader
+	 *
+	 */
+	@RequestMapping("/datax/job/job/loadcc1.do")
 	public @ResponseBody String  loadcc1() {
 		JSONArray data=new JSONArray();
-		List<String> names=dataxManagement.findAllReaderName(1,10);
-		for(int i=0;i<names.size();i++) {
-			JSONObject jsonObject=new JSONObject();
-			jsonObject.put("id", i);
-			jsonObject.put("text", names.get(i));
-			data.add(jsonObject);
-		}
-		return data.toString();
-	}
-	@RequestMapping("/datax/job/job/loadcc2")
-	public @ResponseBody String  loadcc2() {
-		JSONArray data=new JSONArray();
-		List<String> names=dataxManagement.findAllWriterName(1,10);
-		for(int i=0;i<names.size();i++) {
-			JSONObject jsonObject=new JSONObject();
-			jsonObject.put("id", i);
-			jsonObject.put("text", names.get(i));
-			data.add(jsonObject);
-		}
-		return data.toString();
-	}
-	@RequestMapping("/datax/job/job/loadcc3")
-	public @ResponseBody String  loadcc3() {
-		JSONArray data=new JSONArray();
-		List<String> names=dataxManagement.findAllSettingName(1,10);
+		//List<String> names=dataxManagement.findAllReaderName(1,10);
+		List<String> names=jobManagement.findAllReaderName();
 		for(int i=0;i<names.size();i++) {
 			JSONObject jsonObject=new JSONObject();
 			jsonObject.put("id", i);
@@ -56,26 +47,59 @@ public class JobControl {
 		return data.toString();
 	}
 	
-	@RequestMapping("/datax/job/job/pg")
-	public @ResponseBody String  pg(HttpServletRequest request) {
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 加载writer的name
+	 *
+	 */
+	@RequestMapping("/datax/job/job/loadcc2.do")
+	public @ResponseBody String  loadcc2() {
+		JSONArray data=new JSONArray();
+		//List<String> names=dataxManagement.findAllWriterName(1,10);
+		List<String> names=jobManagement.findAllWriterName();
+		for(int i=0;i<names.size();i++) {
+			JSONObject jsonObject=new JSONObject();
+			jsonObject.put("id", i);
+			jsonObject.put("text", names.get(i));
+			data.add(jsonObject);
+		}
+		return data.toString();
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 加载setting的name
+	 *
+	 */
+	@RequestMapping("/datax/job/job/loadcc3.do")
+	public @ResponseBody String  loadcc3() {
+		JSONArray data=new JSONArray();
+		//List<String> names=dataxManagement.findAllWriterName(1,10);
+		List<String> names=jobManagement.findAllSettingName();
+		for(int i=0;i<names.size();i++) {
+			JSONObject jsonObject=new JSONObject();
+			jsonObject.put("id", i);
+			jsonObject.put("text", names.get(i));
+			data.add(jsonObject);
+		}
+		return data.toString();
+	}
+	
+	@RequestMapping("/datax/job/job/pg.do")
+	public @ResponseBody String  createJob(HttpServletRequest request) {
 		String reader=request.getParameter("reader");
 		String writer=request.getParameter("writer");
 		String setting=request.getParameter("setting");
-		dataxManagement.pg(reader,writer,setting);
+		//dataxManagement.pg(reader,writer,setting);
+		jobManagement.createJob(reader,writer,setting);
 		return "";
 	}
 	
-	@RequestMapping("/datax/job/job/findalljob")
+	@RequestMapping("/datax/job/job/findalljob.do")
 	public @ResponseBody String  findalljob() {
-		List<String> jobs=dataxManagement.findAllJobNames(1, 1);
-		JSONArray jsonArray=new JSONArray();
-		for(int i=0;i<jobs.size();i++) {
-			JSONObject jsonObject=new JSONObject();
-			String name=jobs.get(i);
-			jsonObject.put("name", name);
-			jsonArray.add(jsonObject);
-		}
-		return jsonArray.toString();
+		List<JSONObject> jsonObjects=jobManagement.findAllJobs();
+		return jsonObjects.toString();
 	}
 	
 

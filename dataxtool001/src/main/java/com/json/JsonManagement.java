@@ -39,11 +39,11 @@ import net.sf.json.JSONObject;
  */
 @Service
 public class JsonManagement {
-	@Resource
+	@Resource(name="jsonFileMapper")
 	private JsonFileMapper jsonFileMapper;
 	//解析一个文件
 	public JSONObject parseJsonFileToJsonObject(String uri) {
-		if(uri==null||"".equals(uri)) {//浣跨敤榛樿鐨勮矾寰�
+		if(uri==null||"".equals(uri)) {
 			uri="d://job.json";
 		}
 		File f=new File(uri);
@@ -732,6 +732,20 @@ public class JsonManagement {
 	 */
 	public void deleteJsonFileById(int id) {
 		jsonFileMapper.deleteJson(id);
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 获得指定类型的jsonfile
+	 *
+	 */
+	public List<JsonFile> findJsonFilesByType(String type){
+		List<JsonFile> jsonFiles=jsonFileMapper.getJsonFilesByType(type);
+		return jsonFiles;
+	}
+
+	public void save(JsonFile jsonFile) {
+		this.save(jsonFile.getFilename(), jsonFile.getData(), jsonFile.getData());
 		
 	}
 	

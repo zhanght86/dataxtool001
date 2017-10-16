@@ -73,8 +73,8 @@ function addreader(){
 }
 
 //根据文件名删除指定的文件，使用异步提交
-function deletefilebyfilename(filename){
-	var arg="filename="+filename;
+function deletefilebyid(id){
+	var arg="id="+id;
 	url= "http://localhost:8080/dataxtool001/datax/job/setting/deletesetting.do";
 	aj("post", url, arg);
 	$('#dg').datagrid('reload');    
@@ -111,7 +111,9 @@ function initdatagrid(){
 	    columns:[	//定义列
 	    	[   
 	    	{field:'checkbox',title:'checkbox',width:100,checkbox:true},
-	    	{field:'filename',title:'filename',width:100},     
+	    	{field:'id',title:'id',width:100},
+	    	{field:'filename',title:'filename',width:100}, 
+	    	{field:'type',title:'type',width:100}, 
 	        ]
 	    	],
 	    pagination:true,//分页
@@ -147,9 +149,9 @@ function initdatagrid(){
 				}else{
 					for(var i=0;i<rowselects.length;i++){
 						alert("删除");
-						var filename=rowselects[i].filename;
+						var id=rowselects[i].id;
 						//根据文件名删除指定的文件，然后异步提交
-						deletefilebyfilename(filename);
+						deletefilebyid(id);
 					}
 					
 				}

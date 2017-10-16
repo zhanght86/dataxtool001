@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import org.springframework.stereotype.Service;
 
+import com.jcraft.jsch.JSch;
+
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.SCPOutputStream;
@@ -107,6 +109,9 @@ public class LinuxManagement {
         scpOutputStream.flush();  
         scpOutputStream.close();  
     }  
+    
+    
+
 	
         
 }

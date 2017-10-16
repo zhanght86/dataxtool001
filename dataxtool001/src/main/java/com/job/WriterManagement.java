@@ -6,9 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.builder.ResultMapResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.dao.domain.JsonFile;
 import com.json.Configuration;
 
 import com.json.JsonManagement;
@@ -18,7 +21,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 @Service
 public class WriterManagement {
-	private JsonManagement jsonManagement=new JsonManagement();
+	@Autowired
+	private JsonManagement jsonManagement;
 	public JSONObject processWriter() {
 		JSONObject parameter=new JSONObject();
 		JSONObject reader=new JSONObject();
@@ -52,10 +56,55 @@ public class WriterManagement {
 		return defaultWriter;
 	}
 	
-	public List findAllWriters() {
-		String url=Configuration.writerurl;
-		return jsonManagement.parseJsonFileToJsonObjects(url);
-
+	/**
+	 *@param rows 
+	 * @param page 
+	 * @ahthor wang
+	 *@date  2017.10.13
+	 *@description 从后台得到所有的类型type=reader的json对象
+	 *	并且转化为前台需要的数据格式
+	 *	{
+	 *		data:
+	 *		total
+	 *	}
+	 *
+	 */
+	public JSONObject findAllWriters(int page, int rows) {
+		//得到偶有类型为writer的json文件
+		List<JsonFile> writerJsonFiles=jsonManagement.findJsonFilesByType("writer");
+		//转化为前台需要的reader的格式
+		JSONObject jsonObjects=translateWritersToResult(writerJsonFiles);
+		return jsonObjects;
+		
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16 
+	 *@description		将后台多条数据转化为前台需要的格式
+	 *
+	 */
+	private JSONObject translateWritersToResult(List<JsonFile> writers) {
+		JSONObject result=new JSONObject();
+		JSONArray rows=new JSONArray();
+		for(int i=0;i<writers.size();i++) {
+			//JSONObject reader=(JSONObject) writers.get(i);
+			JsonFile writer=writers.get(i);
+			JSONObject row=new JSONObject();
+			String filename=writer.getFilename();
+			String type=writer.getType();
+			int id=writer.getId();
+/*			String name=reader.getJSONObject("data").getString("name");
+			String filename=reader.getString("filename");
+			String type="writer";*/
+			//row.put("name", name);
+			row.put("id", id);
+			row.put("filename", filename);
+			row.put("type", type);
+			rows.add(row);	
+		}
+		result.put("total", rows.size());
+		result.put("rows", rows);
+		return result;
 	}
 	public void saveWriter(JSONObject writerJson, String url) {
 		//在保存之前要进行处理，因为readerjson中不是标准的reader格式
@@ -67,6 +116,7 @@ public class WriterManagement {
 		jsonObject.put("data", formatReader.toString());
 		jsonManagement.JSONToFile(jsonObject, url);
 	}
+	
 	/**
 	 * 
 	 * 前台传来的数据处理成后台需要的数据
@@ -130,29 +180,34 @@ public class WriterManagement {
 		jsonManagement.DeleteFolder(filename);
 		
 	}
-	public JSONObject findWriterByFilename(String filename) {
-		List<JSONObject> jsons=findAllWriters();
-		JSONObject jsonObject=null;
-		for(int i=0;i<jsons.size();i++) {
-			if(filename.equals(jsons.get(i).getString("filename"))) {
-				jsonObject=jsons.get(i);
+	public JsonFile findWriterByFilename(String filename) {
+		List<JsonFile> jsonFiles=jsonManagement.findJsonFilesByType("writer");
+		for(int i=0;i<jsonFiles.size();i++) {
+			JsonFile jsonFile=jsonFiles.get(i);
+			if(filename.equals(jsonFile.getFilename())) {
+				return jsonFile;
 			}
 		}
-		return jsonObject;
+		return null;
 	}
-	public JSONObject translateWriterJson(JSONObject jsonObject) {
-		// TODO Auto-generated method stub
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 将后台取出来的jsonfile中的data转化为前台需要的格式
+	 *			这里得到的result结果只是多行的数据，所以前台获得的只是数据
+	 *				
+	 *
+	 */
+	public JSONObject translateWriterJson(JsonFile jsonFile) {
 		JSONObject result=new JSONObject();
-		JSONArray rows=new JSONArray();
-		
-		result.put("filename", jsonObject.getString("filename"));
-		
-		
-		JSONObject writer=jsonObject.getJSONObject("data");
+		JSONArray rows=new JSONArray();	
+		//result.put("filename", jsonObject.getString("filename"));
+		result.put("filename", jsonFile.getFilename());
+		JSONObject writer=JSONObject.fromObject(jsonFile.getData());
+		//JSONObject writer=jsonObject.getJSONObject("data");
 		Map names=findAllName(writer);
 		Map parameters=findAllParameters(writer);
 		JSONArray column=findColumn(writer);
-		
 		JSONArray arr1=processNames(names);
 		JSONArray arr2=processParameters(parameters);
 		JSONArray arr3=processColumn(column);
@@ -160,6 +215,8 @@ public class WriterManagement {
 		rows.addAll(arr2);
 		rows.addAll(arr3);
 		result.put("rows", rows);
+		result.put("type", jsonFile.getType());
+		result.put("id", jsonFile.getId());
 		return result;
 	}
 	private JSONArray processColumn(JSONArray column) {
@@ -246,10 +303,42 @@ public class WriterManagement {
 		return keyAndValue;
 	}
 	public List<String> findAllWriterName() {
-		List<JSONObject> jsons=findAllWriters();
+		return null;
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 保存前台传来的数据
+	 *
+	 */
+	public void saveReader(JSONObject writerJson) {
+		//在保存之前要进行处理，因为readerjson中不是标准的reader格式
+		JSONObject formatReader=processRows(writerJson);
+		JSONObject jsonObject=new JSONObject();
+		String filename=writerJson.getString("filename");
+		String data=formatReader.toString();
+		String type="writer";
+		jsonManagement.save(filename, data, type);
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.16
+	 *@description 前台传来指定的id然后删除
+	 *
+	 */
+	public void deleteWriterById(int i) {
+		jsonManagement.deleteJsonFileById(i);
+	}
+	public List<String> findAllWritersName() {
 		List<String> names=new LinkedList<String>();
-		for(int i=0;i<jsons.size();i++) {
-			names.add(jsons.get(i).getString("filename"));
+		List<JSONObject> jsonObjects=jsonManagement.findAllJsonFiles();
+		for(int i=0;i<jsonObjects.size();i++) {
+			String filename=jsonObjects.get(i).getString("filename");
+			String type=jsonObjects.get(i).getString("type");
+			if("writer".equals(type)) {
+				names.add(filename);
+			}
+		
 		}
 		return names;
 	}

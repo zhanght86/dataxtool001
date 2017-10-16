@@ -36,7 +36,7 @@ function addreader(){
 			"rows":rows
 	}	
 	var arg="reader="+JSON.stringify(json);
-	url= "http://localhost:8080/dataxtool001/datax/job/reader/addstreamreader.do";
+	url= "http://localhost:8080/dataxtool001/datax/job/reader/addreader.do";
 	aj("POST",url,arg);
 	alert("添加成功");
 	$('#win').window('close');
@@ -45,23 +45,23 @@ function addreader(){
 }
 
 //根据文件名删除指定的文件，使用异步提交
-function deletefilebyfilename(filename){
-	var arg="filename="+filename;
-	url= "http://localhost:8080/dataxtool001/datax/job/reader/deletefilebyfilename.do";
+function deletefilebyfilename(id){
+	var arg="id="+id;
+	url= "http://localhost:8080/dataxtool001/datax/job/reader/deletefilebyid.do";
 	aj("post", url, arg);
 	$('#dg').datagrid('reload');    
 }
 
 //通过文件名到	查找详细的文件信息
-function findReaderByFilename() {
+function findReaderById() {
 	//只会编辑第一个选中的按钮
 	//返回第一个被选中的行
 	var rowselect=$('#dg').datagrid("getSelected");
-	var filename=rowselect.filename;
+	var id=rowselect.id;
 	//弹出窗口
-	var url="http://localhost:8080/dataxtool001/datax/job/reader/findreaderbyfilename.do";
+	var url="http://localhost:8080/dataxtool001/datax/job/reader/findreaderbyid.do";
 	//异步加载数据
-	var arg="filename="+filename;
+	var arg="id="+id;
 	url=url+"?"+arg;
 	//加载数据
 	$('#pg').propertygrid({    
@@ -69,6 +69,7 @@ function findReaderByFilename() {
 	    showGroup: true,    
 	    scrollbarSize: 0    
 	});
+	var filename=rowselect.filename;
 	$("#filename").val(filename);
 	showform();
 
@@ -83,8 +84,8 @@ function initdatagrid(){
 	    columns:[	//定义列
 	    	[   
 	    	{field:'checkbox',title:'checkbox',width:100,checkbox:true},
+	    	{field:'id',title:'id',width:100},  
 	    	{field:'filename',title:'filename',width:100}, 
-	    	{field:'name',title:'Name',width:100},    
 	        {field:'type',title:'type',width:100,align:'right'}    
 	        ]
 	    	],
@@ -95,7 +96,7 @@ function initdatagrid(){
 			iconCls: 'icon-edit',
 			handler: function(){	//编辑按钮
 
-				findReaderByFilename();
+				findReaderById();
 			}
 		},'-',{
 			iconCls: 'icon-help',
@@ -119,9 +120,9 @@ function initdatagrid(){
 				}else{
 					for(var i=0;i<rowselects.length;i++){
 						alert("删除");
-						var filename=rowselects[i].filename;
+						var id=rowselects[i].id;
 						//根据文件名删除指定的文件，然后异步提交
-						deletefilebyfilename(filename);
+						deletefilebyfilename(id);
 					}
 					
 				}
