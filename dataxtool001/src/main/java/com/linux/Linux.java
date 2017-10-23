@@ -47,7 +47,6 @@ public class Linux {
 		sshSftp(hostname, username, password, -1, "d://job13.json", "/home/datax/job/");
 		//执行操作
 		String command="/home/datax/bin/datax.py /home/datax/job/job13.json";
-	
 		StringBuffer sb=linuxManagement.callShellBySSH(hostname, username, password, command);
 		return sb.toString();
 	}

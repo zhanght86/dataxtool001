@@ -33,6 +33,10 @@ import net.sf.json.JSONObject;
  * 	data:  文件的数据
  * }
  * 
+ * 返回结果
+ * 	从该类可以获得两种类型的结果
+ * 	一种是jsonobject格式的
+ * 	一种是原生的jsonfile格式的额
  * 
  * @author Johnny
  *
@@ -745,8 +749,51 @@ public class JsonManagement {
 	}
 
 	public void save(JsonFile jsonFile) {
-		this.save(jsonFile.getFilename(), jsonFile.getData(), jsonFile.getData());
+		this.save(jsonFile.getFilename(), jsonFile.getData(), jsonFile.getType());
 		
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.23 上午10:35:02
+	 *@description 得到指定id的json，该json是JsonFIle
+	 *				若没有查找的则返回null
+	 *
+	 */
+	public JsonFile findJsonFileById(int id) {
+		List<JsonFile> jsonFiles=this.findAllPrimaryJsonFiles();
+		for(int i=0;i<jsonFiles.size();i++) {
+			JsonFile jsonFile=jsonFiles.get(i);
+			if(id==jsonFile.getId()) {
+				return jsonFile;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.23 上午10:49:04
+	 *@description 根据id获得jsonobject格式的对象
+	 *				如果没有找到则返回为null
+	 *
+	 */
+	public JSONObject findJsonObjectById(int id) {
+		JsonFile jsonFile=this.findJsonFileById(id);
+		if(jsonFile==null) {
+			return null;
+		}
+		JSONObject jsonObject=translateJsonFileToJsonObject(jsonFile);
+		return jsonObject;
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.23 上午10:50:20
+	 *@description 将JsonFile格式的数据转化为JsonObject格式的数据
+	 *
+	 */
+	private JSONObject translateJsonFileToJsonObject(JsonFile jsonFile) {
+		JSONObject jsonObject=JSONObject.fromObject(jsonFile);
+		return jsonObject;
 	}
 	
 }

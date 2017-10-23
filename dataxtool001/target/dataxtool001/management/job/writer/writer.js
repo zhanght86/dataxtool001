@@ -35,7 +35,7 @@ function addwriter(){
 			"filename":filename,
 			"rows":rows
 	}	
-	var arg="reader="+JSON.stringify(json);
+	var arg="writer="+JSON.stringify(json);
 	url= "http://localhost:8080/dataxtool001/datax/job/writer/addstreamreader.do";
 	aj("POST",url,arg);
 	alert("添加成功");
@@ -45,8 +45,8 @@ function addwriter(){
 }
 
 //根据文件名删除指定的文件，使用异步提交
-function deletefilebyfilename(filename){
-	var arg="filename="+filename;
+function deletefilebyid(id){
+	var arg="id="+id;
 	url= "http://localhost:8080/dataxtool001/datax/job/writer/deletefilebyfilename.do";
 	aj("post", url, arg);
 	$('#dg').datagrid('reload');    
@@ -79,7 +79,7 @@ function findWriterByFilename() {
 function initdatagrid(){
 	//初始化表格
 	$('#dg').datagrid({ 
-		url:"/dataxtool001//datax/job/writer/findallwriter.do",
+		url:"/dataxtool001/datax/job/writer/findallwriter.do",
 	    columns:[	//定义列
 	    	[   
 	    	{field:'checkbox',title:'checkbox',width:100,checkbox:true},
@@ -119,9 +119,9 @@ function initdatagrid(){
 				}else{
 					for(var i=0;i<rowselects.length;i++){
 						alert("删除");
-						var filename=rowselects[i].filename;
+						var id=rowselects[i].id;
 						//根据文件名删除指定的文件，然后异步提交
-						deletefilebyfilename(filename);
+						deletefilebyid(id);
 					}
 					
 				}

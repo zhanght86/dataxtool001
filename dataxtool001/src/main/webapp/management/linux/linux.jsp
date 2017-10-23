@@ -13,48 +13,29 @@
 	<!-- 导入easyui的主样式文件样式 -->
 	<link rel="stylesheet" href="/dataxtool001/easyui/themes/default/easyui.css">
 	<link rel="stylesheet" href="/dataxtool001/easyui/themes/icon.css">
-
- 	<script type="text/javascript" src="/dataxtool001/management/linux/linux.js"></script>
-	 
+	<script type="text/javascript" src="/dataxtool001/management/linux/linux.js"></script>
 </head>
-	<body>   
-		<!-- 搜索框 -->
-		<input id="ss"></input> 
-		<div id="mm" style="width:120px"> 
-			<div data-options="name:'all',iconCls:'icon-ok'">all</div> 
-			<div data-options="name:'ip'">ip</div> 
-			<div data-options="name:'username'">username</div> 
-			<div data-options="name:'password'">password</div> 
-		</div> 
-		
-		<!-- 添加按钮 -->
-		<a id="btn" href="#">添加一个新的linux链接</a>  
-	
-	
+	<body>
+		<!-- 表格 -->
 		<table id="dg"></table>
-
-		<!-- 一个窗口 -->
-		<div id="win" class="easyui-window" title="My Window" style="width:600px;height:400px"   
-        data-options="iconCls:'icon-save',modal:true,closed:true">   
-		     <form id="ff" method="post">   
+		<!-- 弹出窗口 -->
+		<div id="win" class="easyui-window" title="My Window" style="width:600px;height:400px"  > 
+			<form id="ff" method="post">   
 			    <div>   
-			        <label for="ip">ip:</label>   
-			        <input class="easyui-validatebox" type="text" id="ip" data-options="required:true"  />   
+			        <label for="hostname">hostname:</label>   
+			        <input class="easyui-validatebox" type="text" name="hostname" data-options="required:true" />   
 			    </div>   
 			    <div>   
 			        <label for="username">username:</label>   
-			        <input class="easyui-validatebox" type="text" id="username" data-options="validType:'email'" />   
-			    </div> 
-			    <div>   
-			        <label for="password:">password:</label>   
-			        <input class="easyui-validatebox" type="text" id="password:" data-options="validType:'email'" />   
+			        <input class="easyui-validatebox" type="text" name="username" data-options="validType:'email'" />   
 			    </div>   
 			    <div>   
-			          
-			        <input id="btn1"  class="easyui-validatebox" type="button" value="commit" data-options="validType:'email'" />   
-			    </div>   
-			</form> 
-		</div>
-
+			        <label for="password">password:</label>   
+			        <input  class="easyui-validatebox" type="text" name="password" data-options="validType:'email'" />   
+			    </div>  
+			</form>  
+			<!-- 提交按钮 -->
+			<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">easyui</a> 
+		</div> 
 	</body> 
 </html>

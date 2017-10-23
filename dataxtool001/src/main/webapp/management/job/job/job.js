@@ -20,10 +20,12 @@ function bindbtn(){
 	      var reader=$("#reader").combobox('getText');
 	      var writer=$("#writer").combobox('getText');
 	      var setting=$("#setting").combobox('getText');
+	      var filename=$("#filename").val();
 	      var arg={};
 	      arg.reader=reader;
 	      arg.writer=writer;
 	      arg.setting=setting;
+	      arg.filename=filename;
 		   aj(type,url,arg);
 	   });    
 }

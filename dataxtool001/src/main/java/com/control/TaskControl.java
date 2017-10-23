@@ -1,40 +1,53 @@
 package com.control;
-
 import java.util.List;
-
-import javax.json.Json;
-
-import org.omg.DynamicAny.NameDynAnyPairSeqHelper;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
-import com.dataxmanagement.DataxManagement;
+import com.control.info.TaskInfo;
+import com.dao.domain.JsonFile;
+import com.dao.domain.Linux;
 import com.job.JobManagement;
-import com.linux.Linux;
-import com.service.DataxServiceManagement;
-import com.service.LinuxServiceManagement;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
+import com.linux.LinuxManagement;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * 
- * 执行任务
- * @author wang
+ *@ahthor wang
+ *@date  2017.10.19 上午10:08:26
+ *@description 学习
+ *	
+ *
+ *
+ */
+
+/**
+ *@ahthor wang
+ *@date  2017.10.19 上午9:27:18
+ *@description 
+ *	前台传来的代码的json格式
+ *	{
+ *		linux:   //linux是linux的hostname
+ *		job:     //job是要执行任务的job的filename
+ *	
+ *	}
+ *
+ *	后台返回的信息也是json格式的类型
+ *		
  *
  */
 @Controller
 public class TaskControl {
 	
 	@Autowired
-	private DataxServiceManagement dataxServiceManagement;
+	private JobManagement jobManagement;
 	
 	@Autowired
-	private JobManagement jobManagement;
-	//private LinuxServiceManagement linuxServiceManagement;
+	private LinuxManagement linuxManagement;
 	//加载任务
 	@RequestMapping("/datax/task/loadjob.do")
 	public @ResponseBody String loadJob() {
@@ -48,6 +61,7 @@ public class TaskControl {
 		}
 		return array.toString();
 	}
+	
 	@RequestMapping("/datax/task/loadlinux.do")
 	public @ResponseBody String loadLinux() {
 		JSONArray array=new JSONArray();
@@ -62,14 +76,23 @@ public class TaskControl {
 		return array.toString();
 	}
 	
+	
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.17
+	 *@description 执行指定的job在指定的linux机器上面并返回执行结果
+	 *			注解说明:@ResponseBody,用于将control方法的返回的内容转化为指定的格式如json或者xml
+	 *				  @RequestBody，用于读取http请求的字符串将读取的内容转化为json或者xml格式，并将参数绑定到参数上面
+	 *				  
+	 */
 	@RequestMapping("/datax/task/exe.do")
-	public @ResponseBody String exe() {
-		Linux linux=new Linux();
-		linux.setHostname("192.168.50.165");
-		linux.setUsername("root");
-		linux.setPassword("wangrui");
-		
-		return linux.exe();
+	public @ResponseBody String exe(@RequestBody TaskInfo taskInfo) {
+		Linux linux=linuxManagement.findLinuxByHostname(taskInfo.getHostname());
+		JsonFile task=jobManagement.findJobByFilename(taskInfo.getFilename());
+		String message=linuxManagement.exe(linux,task);
+		System.out.println(message);
+		//通过ssh来执行远程的机器
+		return message;
 	}
 	
 	

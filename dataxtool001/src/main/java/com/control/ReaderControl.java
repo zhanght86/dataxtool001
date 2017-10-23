@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.dataxmanagement.DataxManagement;
 import com.job.ReaderManagement;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 
@@ -31,8 +29,6 @@ import net.sf.json.JSONObject;
 @Controller
 public class ReaderControl {
 	
-	@Autowired
-	private DataxManagement dataxManagement;
 	@Autowired
 	private ReaderManagement readerManagement;
 

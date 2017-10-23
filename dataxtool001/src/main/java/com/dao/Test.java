@@ -12,8 +12,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.dao.domain.JsonFile;
+import com.dao.domain.Linux;
 import com.dao.mapping.JsonDao;
 import com.dao.mapping.JsonFileMapper;
+import com.dao.mapping.LinuxMapper;
 import com.dao.mapping.Service;
 import com.json.JsonManagement;
 import com.linux.LinuxManagement;
@@ -22,7 +24,7 @@ import net.sf.json.JSONObject;
 public class Test {
 	public static void main(String[] args) {
 		ApplicationContext context=new ClassPathXmlApplicationContext("spring-mybatis.xml");
-		JsonFileMapper mapper=(JsonFileMapper) context.getBean("jsonFileMapper");
+		LinuxMapper mapper=(LinuxMapper) context.getBean("linuxMapper");
 		
 /*		JsonManagement jsonManagement=new JsonManagement();
 		JSONObject jsonObject=jsonManagement.parseJsonFileToJsonObject("");
@@ -32,7 +34,12 @@ public class Test {
 		jsonFile.setType("job");
 	
 		mapper.saveJson(jsonFile);*/
-		JsonFile job=mapper.getJsonFile(21);
+		
+		Linux linux=new Linux();
+		linux.setHostname("192.168.50.168");
+		linux.setUsername("root");
+		linux.setPassword("wangrui");
+		mapper.saveLinux(linux);
 		
 	}
 }

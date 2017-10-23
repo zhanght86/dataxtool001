@@ -30,8 +30,12 @@
 	        <input id="filename" class="easyui-validatebox" data-options="required:true" /> 
 			<!-- 提交整个属性表单 -->
 		    <a id="committable" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">保存reader</a>
-			<br>
-			<input id="data" class="easyui-textbox" data-options="multiline:true" style="width:300px;height:100px">
+			<div id="p" class="easyui-panel" title="My Panel"     
+			        style="width:500px;height:150px;padding:10px;background:#fafafa;"   
+			        data-options="iconCls:'icon-save',closable:true,    
+			                collapsible:true,minimizable:true,maximizable:true">   
+	 				
+			</div> 
 			
 		</div> 
 	</body> 

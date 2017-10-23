@@ -29,16 +29,31 @@ function initbtn(){
         //得到所有的列的数据
        // var rowselect=$('#dg').datagrid("getSelected");
         var rows = $("#dg").datagrid("getSelections");//json对象
-        var newfilename=$("#newfilename").val();
+     
+        var name=$("#newfilename").val();
     	//提交
-    	var json={};
-    	json.type=zjop;
-    	json.rows=rows;
-    	json.newfilename=newfilename;
-    	var arg="arg="+JSON.stringify(json);
-    	url= "http://localhost:8080/dataxtool001/datax/job/setting/connect.do";
-    	aj("POST",url,arg);
-    	$('#dg').datagrid('reload');  
+    	var arg={};
+    	arg.type=zjop;
+    	arg.rows=rows;
+    	arg.name=name;
+    	url= "http://localhost:8080/dataxtool001/datax/job/setting/pg.do";
+        $.ajax({
+            type: "post",//请求类型
+            url: url,
+            contentType: "application/json; charset=utf-8", //json格式的数据
+            data: JSON.stringify(arg),//如果没有参数，也要写成"{}",否则不能附加在request中
+            success: function (data) {
+            	//显示执行结果
+            	alert(data);
+
+            },
+            error: function (data) {
+
+            	alert("执行失败");
+            }
+        });
+        
+        $('#dg').datagrid('reload');  
     }); 
 }
 

@@ -79,16 +79,13 @@ public class JobManagement {
 		return names;
 	}
 	/**
-	 *@ahthor wang
+	 *@param filename 
+	 * @ahthor wang
 	 *@date  2017.10.16
 	 *@description 根据writer，reader，setting生成一个job
 	 *
 	 */
-	public void createJob(String reader, String writer, String setting) {
-		//JSONObject readerjson=readerManagement.findReaderByFilename(reader);
-		//JSONObject writerjson=writerManagement.findWriterByFilename(writer);
-		//JSONObject settingjson=settingManagement.findPrimarySettingByFilename(setting);
-		
+	public void createJob(String reader, String writer, String setting, String filename) {
 		JsonFile readerJsonFile=readerManagement.findReaderByFilename(reader);
 		JsonFile writerJsonFile=writerManagement.findWriterByFilename(writer);
 		JsonFile settingJsonFile=settingManagement.findSettingByFilename(setting);
@@ -108,7 +105,36 @@ public class JobManagement {
 		jsonObject2.put("job", job);//job外面其实还有一层
 		
 		//保存job
-		jsonManagement.save("job", jsonObject2.toString(), "job");
+		jsonManagement.save(filename, jsonObject2.toString(), "job");
 		
 	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.17
+	 *@description 根据名字得到job,如果没有找到则返回为null
+	 *
+	 */
+	public JsonFile findJobByFilename(String jobName) {
+		List<JsonFile> jsonFiles=findAllJobs_001();
+		JsonFile job=null;
+		for(int i=0;i<jsonFiles.size();i++) {
+			JsonFile jsonFile=jsonFiles.get(i);
+			if(jsonFile.getFilename().equals(jobName)) {
+				job=jsonFile;
+			}
+		}
+		return job;
+	}
+	
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.17
+	 *@description 新版本的job
+	 *
+	 */
+	public List<JsonFile> findAllJobs_001(){
+		List<JsonFile> jobJsonFiles=jsonManagement.findJsonFilesByType("job");
+		return jobJsonFiles;
+	}
+		
 }

@@ -15,10 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.control.info.JsonInfo;
+import com.control.info.TaskInfo;
+import com.dao.domain.JsonFile;
 import com.json.JsonManagement;
+import com.json.Result;
 
 import net.sf.json.JSONObject;
 @Controller
@@ -70,7 +75,6 @@ public class JsonControl {
 	 *@description 根据前台json的id删除信息
 	 *
 	 */
-
 	@RequestMapping("/datax/job/json/deletejson.do")
 	public @ResponseBody String deletesetting(HttpServletRequest request) {
 	
@@ -79,5 +83,24 @@ public class JsonControl {
 		jsonManagement.deleteJsonFileById(id);
 		return "";
 	}
+	
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.23 上午10:32:35
+	 *@description 查看json
+	 *
+	 */
+	@RequestMapping("/datax/job/json/findjson.do")
+	public @ResponseBody String showJson(@RequestBody JsonInfo JsonInfo) {
+		JSONObject jsonObject=jsonManagement.findJsonObjectById(JsonInfo.getId());
+		System.out.println(jsonManagement.formatJson(jsonObject.getString("data")));
+		return jsonObject.toString();
+	
+	}
+
+
+	
+	
+	
 	
 }

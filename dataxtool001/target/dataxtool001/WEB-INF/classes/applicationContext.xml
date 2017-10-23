@@ -12,13 +12,12 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 
-	<context:component-scan base-package="com.service"></context:component-scan>
+	
 	<context:component-scan base-package="com.linux"></context:component-scan>
 	<context:component-scan base-package="com.json"></context:component-scan>
 	<context:component-scan base-package="com.dataxmanagement"></context:component-scan>
 	<context:component-scan base-package="com.job"></context:component-scan>
 	<context:component-scan base-package="com.dao"></context:component-scan>
-
 	<import resource="classpath:spring-mybatis.xml"/>
      
 </beans>

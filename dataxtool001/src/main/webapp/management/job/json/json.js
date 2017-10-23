@@ -77,24 +77,31 @@ function deletefilebyid(id){
 }
 
 //通过文件名到	查找详细的文件信息
-function findReaderByFilename() {
+function findJsonById() {
 	//只会编辑第一个选中的按钮
 	//返回第一个被选中的行
 	var rowselect=$('#dg').datagrid("getSelected");
-	var filename=rowselect.filename;
+	var arg={};
+	arg.id=rowselect.id;
 	//弹出窗口
-	var url="http://localhost:8080/dataxtool001/datax/job/setting/findsetting.do";
-	//异步加载数据
-	var arg="filename="+filename;
-	url=url+"?"+arg;
-	//加载数据
-	$('#pg').propertygrid({    
-	    url: url,    
-	    showGroup: true,    
-	    scrollbarSize: 0    
-	});
-	$("#filename").val(filename);
-	showform();
+	var url="http://localhost:8080/dataxtool001/datax/job/json/findjson.do";
+    $.ajax({
+        type: "post",//请求类型
+        url: url,
+        contentType: "application/json; charset=utf-8", //json格式的数据
+        data: JSON.stringify(arg),//如果没有参数，也要写成"{}",否则不能附加在request中
+        success: function (data) {
+        	//显示执行结果
+   
+        	$("#p").text(data);
+  
+        },
+        error: function (data) {   	
+        	alert("执行失败");
+
+        }
+    });
+	//showform();
 
 	
 }
@@ -118,8 +125,8 @@ function initdatagrid(){
 		toolbar: [{
 			iconCls: 'icon-edit',
 			handler: function(){	//编辑按钮
-
-				findReaderByFilename();
+				findJsonById();
+		
 			}
 		},'-',{
 			iconCls: 'icon-help',

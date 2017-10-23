@@ -24,6 +24,7 @@
 	    					<input id="setting" class="easyui-combobox" name="dept"   
 	    data-options="valueField:'id',textField:'text',url:'/dataxtool001/datax/job/job/loadcc3.do'" />
 	    
+	    <input id="filename" class="easyui-validatebox" data-options="required:true" /> 
 	    <a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">生成job</a>
 	    
 	    <table id="dg"></table> 

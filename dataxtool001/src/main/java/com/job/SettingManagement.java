@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.control.info.SettingInfo;
 import com.dao.domain.JsonFile;
 import com.json.Configuration;
 
@@ -220,5 +221,66 @@ public class SettingManagement {
 			}
 		}
 		return names;
+	}
+	/**
+	 *@ahthor wang
+	 *@date  2017.10.23 下午1:45:20
+	 *@description 装配setting
+	 *
+	 */
+	public void pg(SettingInfo settingInfo) {
+		List<JsonFile> jsonFiles=new LinkedList<JsonFile>();
+		JsonFile jf=new JsonFile();
+		
+		List<Integer> ids=settingInfo.getIds();
+		//获得要装配的jsonfile
+		for(int i=0;i<ids.size();i++) {
+			int id=ids.get(i);
+			JsonFile jsonFile=findSettingById(id);
+			jsonFiles.add(jsonFile);
+		}
+		String name=settingInfo.getName();
+		String type=settingInfo.getType();
+		//根据类型进行装配
+		if("jsonobj".equals(type)) {
+			JSONObject jsonObject=new JSONObject();
+			for(int i=0;i<jsonFiles.size();i++) {
+				JsonFile jsonFile=jsonFiles.get(i);
+				jsonObject.put(jsonFile.getFilename(), jsonFile.getData());
+			}
+			//转化为jsonFIle病保存到数据库中
+			jf=new JsonFile();
+			jf.setData(jsonObject.toString());
+			jf.setFilename(name);
+			jf.setType("setting");
+		}else if ("jsonarray".equals(type)) {
+			JSONArray jsonArray=new JSONArray();
+			for(int i=0;i<jsonFiles.size();i++) {
+				JsonFile jsonFile=jsonFiles.get(i);
+				jsonArray.add(jsonFile.getData());
+			}
+			//转化为jsonFIle病保存到数据库中
+			jf=new JsonFile();
+			jf.setData(jsonArray.toString());
+			jf.setFilename(name);
+			jf.setType("setting");
+		}
+		
+		jsonManagement.save(jf);
+		
+
+		
+		
+		
+	
+		
+	}
+
+	private JsonFile findSettingById(int id) {
+		JsonFile jsonFile=jsonManagement.findJsonFileById(id);
+		if("setting".equals(jsonFile.getType())) {
+			return jsonFile;
+		}
+		return null;
 	}
 }

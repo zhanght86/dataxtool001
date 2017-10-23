@@ -5,12 +5,14 @@ import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 
-import com.dataxmanagement.DataxManagement;
+import com.control.info.SettingInfo;
+import com.control.info.TaskInfo;
 import com.job.SettingManagement;
 import com.json.FileJson;
 
@@ -30,8 +32,7 @@ import net.sf.json.JSONObject;
  */ 
 @Controller
 public class SettingControl {
-	@Autowired
-	private DataxManagement dataxManagement;
+
 	@Autowired
 	private SettingManagement settingManagement;
 	/**
@@ -86,57 +87,46 @@ public class SettingControl {
 		settingManagement.deleteSettingById(i);
 		return "";
 	}
-	
 	/**
-	 * 
-	 * 前台传来需要请求的文件名
-	 * 从后台获得指定名字的文件
-	 * 如果没有找到则返回null
-	 * 
-	 * 返回到前台的格式
-	 * {
-	 * 	filename:
-	 * 	rows:[]
-	 * 	
-	 * }
-	 *   row都是一个对象
-	 *   格式为
-	    row = {    
-		  name:'AddName',    
-		  value:'',    
-		  group:'Marketing Settings',    
-		  editor:'text'  
-		  } 
-
-	 * 
-	 * @param request
-	 * @return
+	 *@ahthor wang
+	 *@date  2017.10.23 下午1:32:08
+	 *@description 装配
+	 *	前台传来数据
+	 *	{
+	 *		name		//装配之后的名字
+	 *		type:		//要装配的类型，有两种情况，jsongobj和jsonarray
+	 *		rows
+	 *		]
+	 *	}
+	 *
+	 *	后台
+	 *		或根据前台传来的id然后找出各个jsonFile文件，使用的是filename作为子模块的名字
+	 *		之后根据type的类型决定要装配成为jsonobject还是jsonarrayarrary
+	 *
 	 */
-/*	@RequestMapping("/datax/job/setting/findsetting.do")
-	public @ResponseBody String findsettingbyfilename(HttpServletRequest request) {
-		String filename= request.getParameter("filename");
-		JSONObject jsonObject=dataxManagement.findSettingByFilename(filename);
-		return jsonObject.toString();
-	}*/
-	
-	/**
-	 * 
-	 * 拼接多个json
-	 * @param request
-	 * @return
-	 */
-		@RequestMapping("/datax/job/setting/connect.do")
-		public @ResponseBody String connection(HttpServletRequest request) {
-			List<String> names=new LinkedList<String>();
-			JSONObject arg=JSONObject.fromObject(request.getParameter("arg"));
-			String newfilename= arg.getString("newfilename");
-			String type=arg.getString("type");
-			JSONArray rows=arg.getJSONArray("rows");
-			for(int i=0;i<rows.size();i++) {
-				JSONObject row =rows.getJSONObject(i);
-				names.add(row.getString("filename"));
-			}
-			dataxManagement.connetjson(newfilename, type, names);
-			return "";
+	@RequestMapping("/datax/job/setting/pg.do")
+	public @ResponseBody String pg(@RequestBody String arg) {
+		JSONObject jsonObject=new JSONObject().fromObject(arg);
+		
+		JSONArray rows=jsonObject.getJSONArray("rows");
+		String name=jsonObject.getString("name");
+		String type=jsonObject.getString("type");
+		List<Integer> ids=new LinkedList<Integer>();
+		for(int i=0;i<rows.size();i++) {
+			JSONObject row=rows.getJSONObject(i);
+			int id=row.getInt("id");
+			ids.add(id);
+			
 		}
+		
+		SettingInfo settingInfo=new SettingInfo();
+		settingInfo.setName(name);
+		settingInfo.setType(type);
+		settingInfo.setIds(ids);
+
+		
+		settingManagement.pg(settingInfo);
+		return "zhuanpeihchenggong";
+	}
+
 }
